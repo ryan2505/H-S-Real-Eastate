@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..600;1,6..72,200..500&family=Archivo:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="./image-slot.js"></script>
+<style>
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: #FAF8F5; -webkit-font-smoothing: antialiased; }
+  * { box-sizing: border-box; }
+  a { color: #0D0D0F; text-decoration: none; }
+  a:hover { color: #C4162B; }
+  ::selection { background: #C4162B; color: #fff; }
+  .leaflet-control-attribution { font-family: Archivo, sans-serif !important; font-size: 9px !important; }
+  @keyframes hsRise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+
+  /* ── mobile nav ── */
+  .hs-nav-toggle { display: none; }
+  .hs-nav-toggle .hs-icon-close { display: none; }
+  .hs-nav-toggle.is-open .hs-icon-bars { display: none; }
+  .hs-nav-toggle.is-open .hs-icon-close { display: block; }
+  .hs-mobile-panel a { display: block; padding: 15px 4px; color: inherit; font-size: 13px; font-weight: 500; letter-spacing: 0.09em; text-transform: uppercase; }
+  .hs-mobile-panel a:hover { color: #C4162B; }
+  .hs-mobile-panel a + a { border-top: 1px solid rgba(128,128,128,0.18); }
+
+  /* ── stacked-column dividers: vertical on desktop, horizontal once stacked ── */
+  .hs-matches-panel { border-left: 1px solid #E3DFD8; padding-left: clamp(18px,2.4vw,38px); }
+  .hs-community-panel { border-left: 1px solid #E3DFD8; }
+  .hs-xray-form-panel { border-right: 1px solid rgba(255,255,255,0.14); }
+
+  @media (max-width: 880px) {
+    .hs-nav-links { display: none !important; }
+    .hs-nav-toggle { display: inline-flex !important; }
+    .hs-matches-panel { border-left: 0; padding-left: 0; border-top: 1px solid #E3DFD8; padding-top: clamp(24px,6vw,34px); margin-top: 6px; }
+    .hs-community-panel { border-left: 0; border-top: 1px solid #E3DFD8; }
+    .hs-xray-form-panel { border-right: 0; border-bottom: 1px solid rgba(255,255,255,0.14); }
+  }
+</style>
+</helmet>
+
+<div style="font-family:Archivo,sans-serif;color:#0D0D0F;background:#FAF8F5;overflow-x:hidden">
+
+  <!-- ══ NAV ══ -->
+  <header style="position:fixed;top:0;left:0;right:0;z-index:900;transition:background 420ms ease, border-color 420ms ease, backdrop-filter 420ms ease;border-bottom:1px solid transparent;{{ navStyle }}">
+    <div style="max-width:1560px;margin:0 auto;padding:0 clamp(18px,4vw,48px);min-height:clamp(64px,5.2vw,84px);padding-top:11px;padding-bottom:11px;display:flex;align-items:center;flex-wrap:wrap;row-gap:10px;column-gap:clamp(16px,3vw,48px)">
+      <a href="#top" style="display:block;flex-shrink:0">
+        <img src="{{ navLogo }}" alt="H&amp;S Real Estate Dubai" style="height:clamp(34px,3vw,46px);width:auto;display:block;transition:opacity 300ms ease">
+      </a>
+      <nav class="hs-nav-links" style="display:flex;align-items:center;row-gap:10px;column-gap:clamp(14px,1.9vw,30px);margin-left:auto;flex-wrap:wrap;justify-content:flex-end">
+        <a href="#opportunities" style="font-size:12.5px;font-weight:500;letter-spacing:0.09em;text-transform:uppercase;white-space:nowrap;color:inherit;transition:color 300ms ease" style-hover="color:#C4162B">Opportunities</a>
+        <a href="#market" style="font-size:12.5px;font-weight:500;letter-spacing:0.09em;text-transform:uppercase;white-space:nowrap;color:inherit;transition:color 300ms ease" style-hover="color:#C4162B">Market</a>
+        <a href="#communities" style="font-size:12.5px;font-weight:500;letter-spacing:0.09em;text-transform:uppercase;white-space:nowrap;color:inherit;transition:color 300ms ease" style-hover="color:#C4162B">Communities</a>
+        <a href="#xray" style="font-size:12.5px;font-weight:500;letter-spacing:0.09em;text-transform:uppercase;white-space:nowrap;color:inherit;transition:color 300ms ease" style-hover="color:#C4162B">Property X-Ray</a>
+        <a href="#insights" style="font-size:12.5px;font-weight:500;letter-spacing:0.09em;text-transform:uppercase;white-space:nowrap;color:inherit;transition:color 300ms ease" style-hover="color:#C4162B">Insights</a>
+        <a href="#advisors" style="font-size:12.5px;font-weight:500;letter-spacing:0.09em;text-transform:uppercase;white-space:nowrap;color:inherit;transition:color 300ms ease" style-hover="color:#C4162B">About H&amp;S</a>
+        <a href="#talk" style="display:inline-flex;align-items:center;gap:8px;padding:11px 20px;border:1px solid #C4162B;background:#C4162B;color:#FFFFFF;font-size:11.5px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;white-space:nowrap;transition:background 260ms ease,color 260ms ease" style-hover="background:transparent;color:#C4162B">Talk to an Advisor</a>
+      </nav>
+      <button onClick="{{ toggleMobileMenu }}" aria-label="Menu" aria-expanded="{{ mobileMenuOpenAttr }}" class="{{ mobileToggleClass }}" style="margin-left:auto;flex-shrink:0;align-items:center;justify-content:center;width:40px;height:40px;appearance:none;border:0;background:none;cursor:pointer;color:inherit;padding:0">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" style="display:block;margin:0 auto">
+          <g class="hs-icon-bars">
+            <path d="M3 6H19" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
+            <path d="M3 11H19" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
+            <path d="M3 16H19" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
+          </g>
+          <g class="hs-icon-close">
+            <path d="M4 4L18 18M18 4L4 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
+          </g>
+        </svg>
+      </button>
+    </div>
+    <sc-if value="{{ mobileMenuOpen }}" hint-placeholder-val="{{ false }}">
+      <nav class="hs-mobile-panel" style="display:flex;flex-direction:column;padding:4px clamp(18px,4vw,48px) 22px;border-top:1px solid rgba(128,128,128,0.18)">
+        <sc-for list="{{ mobileNavLinks }}" as="l" hint-placeholder-count="7">
+          <a href="{{ l.href }}" onClick="{{ closeMobileMenu }}" style="{{ l.style }}">{{ l.label }}</a>
+        </sc-for>
+      </nav>
+    </sc-if>
+  </header>
+
+  <!-- ══ HERO ══ -->
+  <section id="top" data-screen-label="Hero" style="position:relative;min-height:min(100vh,940px);display:flex;flex-direction:column;justify-content:flex-end;background:#0D0D0F;overflow:hidden">
+    <div style="position:absolute;inset:0">
+      <image-slot id="hero-tower" shape="rect" fit="cover" placeholder="Drop the hero image — Dubai skyline at dusk, architectural"></image-slot>
+    </div>
+    <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(13,13,15,0.82) 0%,rgba(13,13,15,0.44) 38%,rgba(13,13,15,0.88) 100%);pointer-events:none"></div>
+    <div style="position:relative;width:100%;max-width:1560px;margin:0 auto;padding:clamp(120px,14vw,190px) clamp(20px,4vw,48px) clamp(48px,6vw,86px);pointer-events:none">
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:clamp(22px,3vw,34px)">
+        <span style="width:34px;height:1px;background:#C4162B;display:block"></span>
+        <span style="font-size:11px;font-weight:500;letter-spacing:0.24em;text-transform:uppercase;color:rgba(255,255,255,0.76)">Dubai · Est. 1990 · 35 Years in Market</span>
+      </div>
+      <h1 style="margin:0;max-width:17ch;font-family:Newsreader,serif;font-weight:300;font-size:clamp(42px,6.4vw,104px);line-height:0.99;letter-spacing:-0.022em;color:#FFFFFF;text-wrap:balance">Make your next property decision with confidence.</h1>
+      <p style="margin:clamp(22px,2.6vw,34px) 0 0;max-width:62ch;font-size:clamp(15px,1.15vw,18px);line-height:1.62;color:rgba(255,255,255,0.74)">From a first purchase to a multi-million-dirham portfolio, H&amp;S combines market intelligence, local expertise and access to Dubai's most compelling opportunities.</p>
+      <div style="display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin-top:clamp(30px,3.4vw,44px);pointer-events:auto">
+        <a href="#engine" style="display:inline-flex;align-items:center;justify-content:center;padding:17px 32px;background:#FFFFFF;color:#0D0D0F;font-size:12px;font-weight:600;letter-spacing:0.13em;text-transform:uppercase;transition:background 260ms ease,color 260ms ease" style-hover="background:#C4162B;color:#FFFFFF">Find my property</a>
+        <a href="#talk" style="display:inline-flex;align-items:center;justify-content:center;padding:17px 32px;border:1px solid rgba(255,255,255,0.4);color:#FFFFFF;font-size:12px;font-weight:600;letter-spacing:0.13em;text-transform:uppercase;transition:background 260ms ease,border-color 260ms ease" style-hover="background:rgba(255,255,255,0.12);border-color:#FFFFFF">Speak with an advisor</a>
+        <a href="#market" style="display:inline-flex;align-items:center;gap:10px;padding:17px 4px;color:rgba(255,255,255,0.8);font-size:12px;font-weight:500;letter-spacing:0.13em;text-transform:uppercase" style-hover="color:#FFFFFF">Explore the market <span style="font-family:Newsreader,serif;font-size:17px">→</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ DECISION ENGINE ══ -->
+  <section id="engine" data-screen-label="Decision engine" style="position:relative;z-index:10;padding:0 clamp(20px,4vw,48px);{{ engineOffset }}">
+    <div style="max-width:1320px;margin:0 auto;background:#FFFFFF;box-shadow:0 30px 90px -40px rgba(13,13,15,0.45);border:1px solid #E3DFD8">
+      <div style="display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:16px;padding:clamp(28px,3.4vw,44px) clamp(24px,3.4vw,52px) 0">
+        <div>
+          <div style="font-size:11px;font-weight:500;letter-spacing:0.22em;text-transform:uppercase;color:#C4162B">The H&amp;S Decision Engine</div>
+          <h2 style="margin:12px 0 0;font-family:Newsreader,serif;font-weight:300;font-size:clamp(26px,2.6vw,38px);line-height:1.1;letter-spacing:-0.015em">What are you looking to achieve?</h2>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <sc-for list="{{ engineSteps }}" as="s" hint-placeholder-count="3">
+            <div style="display:flex;align-items:center;gap:10px">
+              <span style="font-size:10.5px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;{{ s.style }}">{{ s.label }}</span>
+              <span style="width:22px;height:1px;background:#E3DFD8;display:block"></span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="padding:clamp(24px,3vw,38px) clamp(24px,3.4vw,52px) clamp(28px,3.4vw,46px)">
+
+        <!-- step 1 -->
+        <sc-if value="{{ isStep1 }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;flex-wrap:wrap;gap:1px;background:#E3DFD8;border:1px solid #E3DFD8;animation:hsRise 420ms ease both">
+            <sc-for list="{{ goals }}" as="g" hint-placeholder-count="5">
+              <button onClick="{{ g.pick }}" style="appearance:none;border:0;cursor:pointer;text-align:left;flex:1 1 178px;background:#FFFFFF;padding:clamp(20px,2.2vw,30px) clamp(18px,1.8vw,26px);display:flex;flex-direction:column;gap:10px;min-height:168px;transition:background 240ms ease" style-hover="background:#0D0D0F;color:#FFFFFF">
+                <span style="font-family:Newsreader,serif;font-size:13px;font-weight:400;color:#C4162B">{{ g.num }}</span>
+                <span style="font-size:13px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;font-family:Archivo,sans-serif">{{ g.title }}</span>
+                <span style="font-size:13.5px;line-height:1.5;color:#75726D;margin-top:auto;font-family:Archivo,sans-serif">{{ g.sub }}</span>
+              </button>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <!-- step 2 -->
+        <sc-if value="{{ isStep2 }}" hint-placeholder-val="{{ false }}">
+          <div style="animation:hsRise 420ms ease both">
+            <div style="font-family:Newsreader,serif;font-size:clamp(22px,2.1vw,30px);font-weight:300;margin-bottom:26px">What is your approximate budget?</div>
+            <div style="display:flex;flex-wrap:wrap;gap:1px;background:#E3DFD8;border:1px solid #E3DFD8">
+              <sc-for list="{{ budgets }}" as="b" hint-placeholder-count="5">
+                <button onClick="{{ b.pick }}" style="appearance:none;border:0;flex:1 1 150px;cursor:pointer;padding:26px 18px;display:flex;flex-direction:column;gap:7px;align-items:flex-start;transition:background 240ms ease;{{ b.style }}" style-hover="background:#0D0D0F;color:#FFFFFF">
+                  <span style="font-family:Newsreader,serif;font-size:clamp(19px,1.7vw,25px);font-weight:400;letter-spacing:-0.01em">{{ b.label }}</span>
+                  <span style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;opacity:0.6;font-family:Archivo,sans-serif">{{ b.note }}</span>
+                </button>
+              </sc-for>
+            </div>
+            <button onClick="{{ back }}" style="appearance:none;background:none;border:0;cursor:pointer;margin-top:24px;font-size:11.5px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:#75726D;font-family:Archivo,sans-serif" style-hover="color:#C4162B">← Back</button>
+          </div>
+        </sc-if>
+
+        <!-- step 3 -->
+        <sc-if value="{{ isStep3 }}" hint-placeholder-val="{{ false }}">
+          <div style="animation:hsRise 420ms ease both">
+            <div style="font-family:Newsreader,serif;font-size:clamp(22px,2.1vw,30px);font-weight:300;margin-bottom:8px">What matters most?</div>
+            <div style="font-size:13.5px;color:#75726D;margin-bottom:26px">Select up to three. This shapes which opportunities we surface.</div>
+            <div style="display:flex;flex-wrap:wrap;gap:10px">
+              <sc-for list="{{ priorityOpts }}" as="p" hint-placeholder-count="6">
+                <button onClick="{{ p.toggle }}" style="appearance:none;cursor:pointer;padding:13px 21px;font-size:12.5px;font-weight:500;letter-spacing:0.05em;font-family:Archivo,sans-serif;transition:all 220ms ease;{{ p.style }}">{{ p.label }}</button>
+              </sc-for>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;align-items:center;gap:18px;margin-top:34px">
+              <button onClick="{{ submit }}" style="appearance:none;border:0;cursor:pointer;padding:18px 34px;background:#0D0D0F;color:#FFFFFF;font-size:12px;font-weight:600;letter-spacing:0.13em;text-transform:uppercase;font-family:Archivo,sans-serif;transition:background 260ms ease" style-hover="background:#C4162B">Show me my opportunities</button>
+              <button onClick="{{ back }}" style="appearance:none;background:none;border:0;cursor:pointer;font-size:11.5px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:#75726D;font-family:Archivo,sans-serif" style-hover="color:#C4162B">← Back</button>
+            </div>
+          </div>
+        </sc-if>
+
+        <!-- result -->
+        <sc-if value="{{ isResult }}" hint-placeholder-val="{{ false }}">
+          <div style="animation:hsRise 420ms ease both">
+            <div style="display:flex;flex-wrap:wrap;gap:clamp(24px,3vw,52px);align-items:flex-start">
+              <div style="flex:1 1 300px;min-width:0">
+                <div style="font-size:11px;font-weight:500;letter-spacing:0.22em;text-transform:uppercase;color:#C4162B;margin-bottom:14px">Your brief</div>
+                <div style="font-family:Newsreader,serif;font-size:clamp(23px,2.3vw,34px);font-weight:300;line-height:1.24;letter-spacing:-0.012em">{{ resultHeadline }}</div>
+                <div style="margin-top:22px;font-size:14.5px;line-height:1.66;color:#57544F;max-width:46ch">{{ resultBody }}</div>
+                <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:28px">
+                  <a href="#opportunities" style="display:inline-flex;padding:15px 26px;background:#0D0D0F;color:#FFFFFF;font-size:11.5px;font-weight:600;letter-spacing:0.13em;text-transform:uppercase;transition:background 260ms ease" style-hover="background:#C4162B;color:#FFFFFF">See matching opportunities</a>
+                  <button onClick="{{ reset }}" style="appearance:none;background:none;border:1px solid #E3DFD8;cursor:pointer;padding:15px 26px;font-size:11.5px;font-weight:600;letter-spacing:0.13em;text-transform:uppercase;font-family:Archivo,sans-serif;transition:border-color 240ms ease" style-hover="border-color:#0D0D0F">Start again</button>
+                </div>
+              </div>
+              <div class="hs-matches-panel" style="flex:1 1 320px;min-width:0">
+                <div style="font-size:11px;font-weight:500;letter-spacing:0.22em;text-transform:uppercase;color:#75726D;margin-bottom:18px">Indicative matches</div>
+                <sc-for list="{{ matches }}" as="m" hint-placeholder-count="3">
+                  <div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:15px 0;border-bottom:1px solid #EFECE6">
+                    <div style="min-width:0">
+                      <div style="font-family:Newsreader,serif;font-size:19px;font-weight:400">{{ m.name }}</div>
+                      <div style="font-size:11.5px;letter-spacing:0.09em;text-transform:uppercase;color:#75726D;margin-top:5px">{{ m.meta }}</div>
+                    </div>
+                    <div style="text-align:right;flex-shrink:0">
+                      <div style="font-family:Newsreader,serif;font-size:19px;color:#C4162B">{{ m.yield }}</div>
+                      <div style="font-size:10.5px;letter-spacing:0.1em;text-transform:uppercase;color:#9C9893;margin-top:5px">gross yield</div>
+                    </div>
+                  </div>
+                </sc-for>
+                <div style="font-size:11px;line-height:1.5;color:#9C9893;margin-top:14px">Illustrative figures for demonstration. Live inventory and verified yields are confirmed by your advisor.</div>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ TRUST BAR ══ -->
+  <section data-counters="1" data-screen-label="Trust bar" style="padding:clamp(64px,7vw,110px) clamp(20px,4vw,48px) clamp(48px,5vw,80px)">
+    <div style="max-width:1320px;margin:0 auto">
+      <p data-reveal="1" style="margin:0 auto clamp(40px,4.5vw,64px);max-width:34ch;text-align:center;font-family:Newsreader,serif;font-weight:300;font-size:clamp(21px,2.1vw,30px);line-height:1.34;letter-spacing:-0.012em;text-wrap:balance">You are making a major financial decision. We have the experience to guide it.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:1px;background:#E3DFD8;border-top:1px solid #E3DFD8;border-bottom:1px solid #E3DFD8">
+        <sc-for list="{{ stats }}" as="st" hint-placeholder-count="6">
+          <div style="flex:1 1 150px;background:#FAF8F5;padding:clamp(24px,2.6vw,34px) clamp(12px,1.4vw,20px);text-align:center">
+            <div style="font-family:Newsreader,serif;font-weight:300;font-size:clamp(30px,3.2vw,46px);line-height:1;letter-spacing:-0.02em;font-variant-numeric:tabular-nums">{{ st.display }}</div>
+            <div style="margin-top:12px;font-size:10.5px;font-weight:500;letter-spacing:0.15em;text-transform:uppercase;color:#75726D;line-height:1.5">{{ st.label }}</div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="margin-top:16px;text-align:center;font-size:10.5px;letter-spacing:0.1em;text-transform:uppercase;color:#A8A49E">Illustrative figures — replace with verified H&amp;S business data before launch</div>
+    </div>
+  </section>
+
+  <!-- ══ NOT EVERY PROPERTY ══ -->
+  <section data-screen-label="Opportunity thesis" style="background:#0D0D0F;color:#FFFFFF;padding:clamp(80px,9vw,150px) clamp(20px,4vw,48px)">
+    <div style="max-width:1320px;margin:0 auto">
+      <div style="display:flex;flex-wrap:wrap;gap:clamp(30px,5vw,90px);align-items:flex-end;margin-bottom:clamp(50px,6vw,92px)">
+        <h2 data-reveal="1" style="flex:1 1 440px;margin:0;font-family:Newsreader,serif;font-weight:300;font-size:clamp(34px,4.6vw,70px);line-height:1.04;letter-spacing:-0.022em;text-wrap:balance">Not every property is a good investment.</h2>
+        <p data-reveal="1" style="flex:1 1 320px;margin:0;max-width:46ch;font-size:clamp(15px,1.1vw,17px);line-height:1.68;color:rgba(255,255,255,0.66)">Dubai offers thousands of properties. The challenge isn't finding one — it's identifying the right one for your objective, your horizon and your tolerance for risk.</p>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:1px;background:rgba(255,255,255,0.14)">
+        <div data-reveal="1" style="flex:1 1 260px;background:#0D0D0F;padding:clamp(30px,3.2vw,48px) clamp(24px,2.4vw,40px)">
+          <div style="font-family:Newsreader,serif;font-size:14px;color:#C4162B;margin-bottom:26px">01</div>
+          <h3 style="margin:0 0 16px;font-size:13px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase">Market Intelligence</h3>
+          <p style="margin:0;font-size:15px;line-height:1.66;color:rgba(255,255,255,0.62)">Understand what is actually happening in a community — supply pipeline, absorption, rent trajectory — before you commit capital.</p>
+        </div>
+        <div data-reveal="1" style="flex:1 1 260px;background:#0D0D0F;padding:clamp(30px,3.2vw,48px) clamp(24px,2.4vw,40px)">
+          <div style="font-family:Newsreader,serif;font-size:14px;color:#C4162B;margin-bottom:26px">02</div>
+          <h3 style="margin:0 0 16px;font-size:13px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase">Opportunity Selection</h3>
+          <p style="margin:0;font-size:15px;line-height:1.66;color:rgba(255,255,255,0.62)">We filter inventory against your objective rather than our stock — and we tell you when the answer is to wait.</p>
+        </div>
+        <div data-reveal="1" style="flex:1 1 260px;background:#0D0D0F;padding:clamp(30px,3.2vw,48px) clamp(24px,2.4vw,40px)">
+          <div style="font-family:Newsreader,serif;font-size:14px;color:#C4162B;margin-bottom:26px">03</div>
+          <h3 style="margin:0 0 16px;font-size:13px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase">Advisory</h3>
+          <p style="margin:0;font-size:15px;line-height:1.66;color:rgba(255,255,255,0.62)">A named specialist who has transacted in your target community, from first viewing through handover and lease-up.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ OPPORTUNITIES ══ -->
+  <section id="opportunities" data-screen-label="Opportunity collections" style="padding:clamp(80px,9vw,150px) clamp(20px,4vw,48px)">
+    <div style="max-width:1320px;margin:0 auto">
+      <div style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-end;justify-content:space-between;margin-bottom:clamp(34px,3.6vw,52px)">
+        <div>
+          <div style="font-size:11px;font-weight:500;letter-spacing:0.22em;text-transform:uppercase;color:#C4162B;margin-bottom:16px">Opportunity Briefings</div>
+          <h2 style="margin:0;max-width:16ch;font-family:Newsreader,serif;font-weight:300;font-size:clamp(34px,4.4vw,64px);line-height:1.05;letter-spacing:-0.02em;text-wrap:balance">Curated by objective, not by postcode.</h2>
+        </div>
+        <a href="#talk" style="font-size:11.5px;font-weight:600;letter-spacing:0.13em;text-transform:uppercase;border-bottom:1px solid #C4162B;padding-bottom:6px">Request the full briefing →</a>
+      </div>
+
+      <div style="display:flex;flex-wrap:wrap;gap:0;border-bottom:1px solid #E3DFD8;margin-bottom:clamp(30px,3.2vw,46px)">
+        <sc-for list="{{ collectionTabs }}" as="c" hint-placeholder-count="5">
+          <button onClick="{{ c.pick }}" style="appearance:none;background:none;cursor:pointer;padding:16px 22px 15px;font-size:11.5px;font-weight:600;letter-spacing:0.13em;text-transform:uppercase;font-family:Archivo,sans-serif;border:0;transition:all 240ms ease;{{ c.style }}">{{ c.label }}</button>
+        </sc-for>
+      </div>
+
+      <div style="display:flex;flex-wrap:wrap;gap:clamp(20px,2.4vw,40px);align-items:flex-start;margin-bottom:clamp(28px,3vw,42px)">
+        <div style="flex:0 1 480px;font-family:Newsreader,serif;font-size:clamp(20px,1.9vw,27px);font-weight:300;line-height:1.32;letter-spacing:-0.012em">{{ collectionThesis }}</div>
+        <div style="flex:1 1 260px;max-width:42ch;font-size:14.5px;line-height:1.68;color:#57544F">{{ collectionBody }}</div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(288px,1fr));gap:clamp(18px,2vw,32px)">
+        <sc-for list="{{ collectionItems }}" as="it" hint-placeholder-count="3">
+          <article style="background:#FFFFFF;border:1px solid #E3DFD8;display:flex;flex-direction:column;transition:box-shadow 320ms ease,transform 320ms ease" style-hover="box-shadow:0 28px 60px -34px rgba(13,13,15,0.4);transform:translateY(-4px)">
+            <div style="position:relative;aspect-ratio:4/3;background:#EDEAE4">
+              <image-slot id="{{ it.slotId }}" shape="rect" fit="cover" placeholder="Property image"></image-slot>
+              <div style="position:absolute;top:0;left:0;background:#0D0D0F;color:#FFFFFF;font-size:10px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;padding:8px 13px;pointer-events:none">{{ it.badge }}</div>
+            </div>
+            <div style="padding:clamp(20px,2vw,28px);display:flex;flex-direction:column;flex:1">
+              <div style="font-size:10.5px;font-weight:500;letter-spacing:0.15em;text-transform:uppercase;color:#75726D">{{ it.area }}</div>
+              <h3 style="margin:10px 0 0;font-family:Newsreader,serif;font-size:clamp(21px,1.9vw,26px);font-weight:400;line-height:1.16;letter-spacing:-0.012em">{{ it.name }}</h3>
+              <div style="display:flex;flex-wrap:wrap;gap:0 26px;margin:20px 0;padding:16px 0;border-top:1px solid #EFECE6;border-bottom:1px solid #EFECE6">
+                <div><div style="font-size:9.5px;letter-spacing:0.14em;text-transform:uppercase;color:#9C9893">From</div><div style="font-family:Newsreader,serif;font-size:18px;margin-top:4px">{{ it.price }}</div></div>
+                <div><div style="font-size:9.5px;letter-spacing:0.14em;text-transform:uppercase;color:#9C9893">Type</div><div style="font-family:Newsreader,serif;font-size:18px;margin-top:4px">{{ it.type }}</div></div>
+                <div><div style="font-size:9.5px;letter-spacing:0.14em;text-transform:uppercase;color:#9C9893">Est. yield</div><div style="font-family:Newsreader,serif;font-size:18px;margin-top:4px;color:#C4162B">{{ it.yield }}</div></div>
+              </div>
+              <div style="font-size:9.5px;letter-spacing:0.14em;text-transform:uppercase;color:#9C9893;margin-bottom:8px">Investment thesis</div>
+              <p style="margin:0 0 24px;font-size:14px;line-height:1.62;color:#57544F">{{ it.thesis }}</p>
+              <a href="#talk" style="margin-top:auto;display:inline-flex;align-items:center;justify-content:space-between;padding:14px 18px;border:1px solid #E3DFD8;font-size:11px;font-weight:600;letter-spacing:0.13em;text-transform:uppercase;transition:background 240ms ease,color 240ms ease,border-color 240ms ease" style-hover="background:#0D0D0F;border-color:#0D0D0F;color:#FFFFFF">Explore opportunity <span style="font-family:Newsreader,serif;font-size:16px">→</span></a>
+            </div>
+          </article>
+        </sc-for>
+      </div>
+      <div style="margin-top:18px;font-size:10.5px;letter-spacing:0.1em;text-transform:uppercase;color:#A8A49E">Illustrative inventory and yields shown for design purposes</div>
+    </div>
+  </section>
+
+  <!-- ══ WHY DUBAI / WHY NOW ══ -->
+  <section id="market" data-screen-label="Why Dubai now" style="background:#0D0D0F;color:#FFFFFF;padding:clamp(80px,9vw,150px) clamp(20px,4vw,48px)">
+    <div style="max-width:1320px;margin:0 auto">
+      <div style="display:flex;flex-wrap:wrap;gap:clamp(30px,5vw,80px);align-items:flex-end;margin-bottom:clamp(50px,5.5vw,84px)">
+        <div style="flex:1 1 460px">
+          <div style="font-size:11px;font-weight:500;letter-spacing:0.22em;text-transform:uppercase;color:#C4162B;margin-bottom:16px">Why Dubai · Why Now</div>
+          <h2 style="margin:0;max-width:15ch;font-family:Newsreader,serif;font-weight:300;font-size:clamp(34px,4.4vw,64px);line-height:1.05;letter-spacing:-0.02em;text-wrap:balance">The case for the market, in five numbers.</h2>
+        </div>
+        <p style="flex:1 1 300px;margin:0;max-width:44ch;font-size:15.5px;line-height:1.68;color:rgba(255,255,255,0.64)">Not a statistics dump. These are the four indicators our advisors actually watch when judging whether an entry point is sound.</p>
+      </div>
+
+      <div style="display:flex;flex-wrap:wrap;gap:1px;background:rgba(255,255,255,0.14);margin-bottom:clamp(40px,4.4vw,70px)">
+        <sc-for list="{{ marketIndicators }}" as="mi" hint-placeholder-count="4">
+          <div style="flex:1 1 280px;background:#0D0D0F;padding:clamp(26px,2.8vw,40px)">
+            <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px">
+              <div style="font-family:Newsreader,serif;font-weight:300;font-size:clamp(34px,3.6vw,52px);line-height:1;letter-spacing:-0.02em">{{ mi.value }}</div>
+              <div style="font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#C4162B">{{ mi.delta }}</div>
+            </div>
+            <div style="margin-top:16px;font-size:11px;font-weight:500;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.72)">{{ mi.label }}</div>
+            <p style="margin:12px 0 0;font-size:13.5px;line-height:1.6;color:rgba(255,255,255,0.5)">{{ mi.note }}</p>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="display:flex;flex-wrap:wrap;gap:clamp(28px,3.4vw,60px)">
+        <div style="flex:1 1 420px;min-width:0">
+          <div style="font-size:11px;font-weight:500;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.72);margin-bottom:28px">Residential transaction volume · index</div>
+          <div style="display:flex;align-items:flex-end;gap:clamp(8px,1.4vw,20px);height:clamp(160px,17vw,240px)">
+            <sc-for list="{{ volumeBars }}" as="v" hint-placeholder-count="6">
+              <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;height:100%;gap:10px">
+                <div style="width:100%;height:0;background:#C4162B;transition:height 900ms cubic-bezier(0.2,0.7,0.2,1);{{ v.style }}"></div>
+                <div style="font-size:10.5px;letter-spacing:0.1em;color:rgba(255,255,255,0.5);text-align:center">{{ v.year }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="flex:1 1 300px;min-width:0">
+          <div style="font-size:11px;font-weight:500;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.72);margin-bottom:28px">Gross rental yield by community</div>
+          <sc-for list="{{ yieldRows }}" as="y" hint-placeholder-count="5">
+            <div style="display:flex;align-items:center;gap:16px;padding:11px 0">
+              <div style="flex:0 0 130px;font-size:12.5px;color:rgba(255,255,255,0.78)">{{ y.name }}</div>
+              <div style="flex:1;height:2px;background:rgba(255,255,255,0.14);position:relative">
+                <div style="position:absolute;left:0;top:-2px;height:6px;width:0;background:#FFFFFF;transition:width 900ms cubic-bezier(0.2,0.7,0.2,1);{{ y.style }}"></div>
+              </div>
+              <div style="flex:0 0 52px;text-align:right;font-family:Newsreader,serif;font-size:17px">{{ y.pct }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      <div style="margin-top:26px;font-size:10.5px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.34)">Illustrative market figures — source citation required before publication</div>
+    </div>
+  </section>
+
+  <!-- ══ COMMUNITIES / MAP ══ -->
+  <section id="communities" data-screen-label="Community intelligence" style="padding:clamp(80px,9vw,150px) clamp(20px,4vw,48px)">
+    <div style="max-width:1320px;margin:0 auto">
+      <div style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-end;justify-content:space-between;margin-bottom:clamp(34px,3.6vw,52px)">
+        <div>
+          <div style="font-size:11px;font-weight:500;letter-spacing:0.22em;text-transform:uppercase;color:#C4162B;margin-bottom:16px">Location Intelligence</div>
+          <h2 style="margin:0;font-family:Newsreader,serif;font-weight:300;font-size:clamp(34px,4.4vw,64px);line-height:1.05;letter-spacing:-0.02em">Where should you invest?</h2>
+        </div>
+        <p style="margin:0;max-width:38ch;font-size:14.5px;line-height:1.66;color:#57544F">Select a community to see its price band, yield profile, demand character and maturity.</p>
+      </div>
+
+      <div style="display:flex;flex-wrap:wrap;border:1px solid #E3DFD8;background:#FFFFFF">
+        <div style="flex:1 1 520px;min-width:280px;min-height:clamp(340px,42vw,560px);position:relative">
+          <x-import component="DubaiMap" from="./dubai-map.jsx" areas="{{ areas }}" selected-id="{{ areaId }}" on-select="{{ selectArea }}" hint-size="100%,100%" style="position:absolute;inset:0"></x-import>
+        </div>
+        <div class="hs-community-panel" style="flex:1 1 360px;min-width:280px;padding:clamp(24px,2.8vw,42px)">
+          <div style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:22px">
+            <sc-for list="{{ areaTags }}" as="t" hint-placeholder-count="3">
+              <span style="font-size:10px;font-weight:600;letter-spacing:0.13em;text-transform:uppercase;padding:6px 11px;border:1px solid #C4162B;color:#C4162B">{{ t }}</span>
+            </sc-for>
+          </div>
+          <h3 style="margin:0;font-family:Newsreader,serif;font-weight:300;font-size:clamp(28px,3vw,44px);line-height:1.06;letter-spacing:-0.018em">{{ area.name }}</h3>
+          <p style="margin:16px 0 26px;font-size:14.5px;line-height:1.68;color:#57544F;max-width:44ch">{{ area.summary }}</p>
+          <div style="display:flex;flex-wrap:wrap;gap:1px;background:#E3DFD8;border:1px solid #E3DFD8">
+            <sc-for list="{{ areaMetrics }}" as="am" hint-placeholder-count="4">
+              <div style="flex:1 1 130px;background:#FFFFFF;padding:18px 16px">
+                <div style="font-size:9.5px;letter-spacing:0.14em;text-transform:uppercase;color:#9C9893">{{ am.label }}</div>
+                <div style="font-family:Newsreader,serif;font-size:20px;margin-top:7px;line-height:1.2">{{ am.value }}</div>
+              </div>
+            </sc-for>
+          </div>
+          <div style="margin-top:26px;padding-top:22px;border-top:1px solid #EFECE6">
+            <div style="font-size:9.5px;letter-spacing:0.14em;text-transform:uppercase;color:#9C9893;margin-bottom:8px">H&amp;S view</div>
+            <p style="margin:0;font-size:14.5px;line-height:1.66;color:#0D0D0F;font-family:Newsreader,serif;font-size:17px;font-weight:300">{{ area.view }}</p>
+          </div>
+          <a href="#talk" style="margin-top:26px;display:inline-flex;align-items:center;gap:10px;padding:15px 24px;background:#0D0D0F;color:#FFFFFF;font-size:11.5px;font-weight:600;letter-spacing:0.13em;text-transform:uppercase;transition:background 260ms ease" style-hover="background:#C4162B;color:#FFFFFF">Explore this community <span style="font-family:Newsreader,serif;font-size:16px">→</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ PROPERTY X-RAY ══ -->
+  <section id="xray" data-screen-label="Property X-Ray" style="background:#17171A;color:#FFFFFF;padding:clamp(80px,9vw,150px) clamp(20px,4vw,48px)">
+    <div style="max-width:1320px;margin:0 auto">
+      <div style="text-align:center;margin-bottom:clamp(40px,4.4vw,70px)">
+        <div style="font-size:11px;font-weight:500;letter-spacing:0.22em;text-transform:uppercase;color:#C4162B;margin-bottom:18px">Proprietary to H&amp;S</div>
+        <h2 style="margin:0 auto;max-width:18ch;font-family:Newsreader,serif;font-weight:300;font-size:clamp(34px,4.4vw,64px);line-height:1.05;letter-spacing:-0.02em;text-wrap:balance">The H&amp;S Property X-Ray</h2>
+        <p style="margin:22px auto 0;max-width:56ch;font-size:15.5px;line-height:1.68;color:rgba(255,255,255,0.62)">Enter a property and we return what a professional buyer would want to know: value position, rental potential, community performance, risks — and a single opportunity score.</p>
+      </div>
+
+      <div style="display:flex;flex-wrap:wrap;border:1px solid rgba(255,255,255,0.14)">
+        <div class="hs-xray-form-panel" style="flex:1 1 330px;min-width:270px;padding:clamp(26px,3vw,44px)">
+          <div style="font-size:11px;font-weight:500;letter-spacing:0.16em;text-transform:uppercase;color:rgba(255,255,255,0.72);margin-bottom:26px">Property details</div>
+
+          <div style="margin-bottom:24px">
+            <label style="display:block;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:10px">Community</label>
+            <select onChange="{{ setXrayArea }}" value="{{ xray.areaId }}" style="width:100%;appearance:none;background:transparent;border:0;border-bottom:1px solid rgba(255,255,255,0.28);color:#FFFFFF;font-family:Newsreader,serif;font-size:21px;font-weight:300;padding:8px 0;cursor:pointer;outline:none">
+              <sc-for list="{{ areas }}" as="a" hint-placeholder-count="6">
+                <option value="{{ a.id }}" style="color:#0D0D0F">{{ a.name }}</option>
+              </sc-for>
+            </select>
+          </div>
+
+          <div style="margin-bottom:24px">
+            <label style="display:block;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:10px">Property type</label>
+            <div style="display:flex;flex-wrap:wrap;gap:8px">
+              <sc-for list="{{ xrayTypes }}" as="t" hint-placeholder-count="3">
+                <button onClick="{{ t.pick }}" style="appearance:none;cursor:pointer;padding:10px 16px;font-size:11.5px;font-weight:500;letter-spacing:0.08em;font-family:Archivo,sans-serif;transition:all 220ms ease;{{ t.style }}">{{ t.label }}</button>
+              </sc-for>
+            </div>
+          </div>
+
+          <div style="margin-bottom:24px">
+            <label style="display:block;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:10px">Bedrooms</label>
+            <div style="display:flex;flex-wrap:wrap;gap:8px">
+              <sc-for list="{{ xrayBeds }}" as="b" hint-placeholder-count="4">
+                <button onClick="{{ b.pick }}" style="appearance:none;cursor:pointer;width:44px;height:44px;font-size:12.5px;font-weight:500;font-family:Archivo,sans-serif;transition:all 220ms ease;{{ b.style }}">{{ b.label }}</button>
+              </sc-for>
+            </div>
+          </div>
+
+          <div style="margin-bottom:30px">
+            <label style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:14px">
+              <span>Asking price</span>
+              <span style="font-family:Newsreader,serif;font-size:22px;color:#FFFFFF;letter-spacing:0">{{ xrayPriceLabel }}</span>
+            </label>
+            <input type="range" min="600000" max="30000000" step="100000" value="{{ xray.price }}" onChange="{{ setXrayPrice }}" onInput="{{ setXrayPrice }}" style="width:100%;accent-color:#C4162B;cursor:pointer">
+          </div>
+
+          <button onClick="{{ runXray }}" style="width:100%;appearance:none;border:0;cursor:pointer;padding:18px;background:#C4162B;color:#FFFFFF;font-size:12px;font-weight:600;letter-spacing:0.13em;text-transform:uppercase;font-family:Archivo,sans-serif;transition:background 260ms ease" style-hover="background:#FFFFFF;color:#0D0D0F">Get my Property X-Ray</button>
+        </div>
+
+        <div style="flex:1.25 1 400px;min-width:280px;padding:clamp(26px,3vw,44px)">
+          <sc-if value="{{ xrayDone }}" hint-placeholder-val="{{ true }}">
+            <div style="animation:hsRise 500ms ease both">
+              <div style="display:flex;flex-wrap:wrap;gap:clamp(22px,3vw,44px);align-items:center;padding-bottom:clamp(24px,2.6vw,36px);border-bottom:1px solid rgba(255,255,255,0.14)">
+                <div style="position:relative;width:148px;height:148px;flex-shrink:0">
+                  <svg viewBox="0 0 120 120" style="width:100%;height:100%;transform:rotate(-90deg)">
+                    <circle cx="60" cy="60" r="54" fill="none" stroke="rgba(255,255,255,0.14)" stroke-width="3"></circle>
+                    <circle cx="60" cy="60" r="54" fill="none" stroke="#C4162B" stroke-width="3" stroke-linecap="butt" stroke-dasharray="{{ xrayDash }}"></circle>
+                  </svg>
+                  <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center">
+                    <div style="font-family:Newsreader,serif;font-weight:300;font-size:46px;line-height:1;letter-spacing:-0.02em">{{ xrayScore }}</div>
+                    <div style="font-size:9.5px;letter-spacing:0.16em;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-top:6px">/ 100</div>
+                  </div>
+                </div>
+                <div style="flex:1 1 200px;min-width:0">
+                  <div style="font-size:10.5px;letter-spacing:0.16em;text-transform:uppercase;color:#C4162B;margin-bottom:10px">Opportunity score</div>
+                  <div style="font-family:Newsreader,serif;font-weight:300;font-size:clamp(24px,2.4vw,34px);line-height:1.12;letter-spacing:-0.015em">{{ xrayVerdict }}</div>
+                  <p style="margin:14px 0 0;font-size:14px;line-height:1.62;color:rgba(255,255,255,0.6)">{{ xraySummary }}</p>
+                </div>
+              </div>
+
+              <div style="display:flex;flex-wrap:wrap;gap:1px;background:rgba(255,255,255,0.14);margin:clamp(24px,2.6vw,36px) 0">
+                <sc-for list="{{ xrayMetrics }}" as="m" hint-placeholder-count="6">
+                  <div style="flex:1 1 150px;background:#17171A;padding:18px 16px">
+                    <div style="font-size:9.5px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.45)">{{ m.label }}</div>
+                    <div style="font-family:Newsreader,serif;font-size:22px;margin-top:8px;line-height:1.1">{{ m.value }}</div>
+                    <div style="font-size:11px;color:rgba(255,255,255,0.45);margin-top:6px">{{ m.note }}</div>
+                  </div>
+                </sc-for>
+              </div>
+
+              <div style="display:flex;flex-wrap:wrap;gap:clamp(20px,2.6vw,40px)">
+                <div style="flex:1 1 220px;min-width:0">
+                  <div style="font-size:9.5px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:14px">Why</div>
+                  <sc-for list="{{ xrayWhy }}" as="w" hint-placeholder-count="3">
+                    <div style="display:flex;gap:11px;margin-bottom:11px">
+                      <span style="color:#C4162B;font-family:Newsreader,serif;font-size:15px;line-height:1.5">—</span>
+                      <span style="font-size:13.5px;line-height:1.56;color:rgba(255,255,255,0.72)">{{ w }}</span>
+                    </div>
+                  </sc-for>
+                </div>
+                <div style="flex:1 1 220px;min-width:0">
+                  <div style="font-size:9.5px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:14px">Key risks</div>
+                  <sc-for list="{{ xrayRisks }}" as="r" hint-placeholder-count="2">
+                    <div style="display:flex;gap:11px;margin-bottom:11px">
+                      <span style="color:rgba(255,255,255,0.4);font-family:Newsreader,serif;font-size:15px;line-height:1.5">—</span>
+                      <span style="font-size:13.5px;line-height:1.56;color:rgba(255,255,255,0.72)">{{ r }}</span>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+
+              <a href="#talk" style="margin-top:clamp(24px,2.6vw,36px);display:inline-flex;align-items:center;gap:10px;padding:16px 26px;border:1px solid rgba(255,255,255,0.3);color:#FFFFFF;font-size:11.5px;font-weight:600;letter-spacing:0.13em;text-transform:uppercase;transition:background 240ms ease" style-hover="background:rgba(255,255,255,0.1)">Have an advisor review this <span style="font-family:Newsreader,serif;font-size:16px">→</span></a>
+              <div style="margin-top:20px;font-size:10.5px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.3)">Demonstration model — production scoring uses verified DLD and listing data</div>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ CASE STUDIES ══ -->
+  <section data-screen-label="Case studies" style="padding:clamp(80px,9vw,150px) clamp(20px,4vw,48px)">
+    <div style="max-width:1320px;margin:0 auto">
+      <div style="margin-bottom:clamp(40px,4.4vw,64px)">
+        <div style="font-size:11px;font-weight:500;letter-spacing:0.22em;text-transform:uppercase;color:#C4162B;margin-bottom:16px">Real Results</div>
+        <h2 style="margin:0;max-width:18ch;font-family:Newsreader,serif;font-weight:300;font-size:clamp(34px,4.4vw,64px);line-height:1.05;letter-spacing:-0.02em;text-wrap:balance">Three decisions, and what they produced.</h2>
+      </div>
+
+      <sc-for list="{{ cases }}" as="cs" hint-placeholder-count="3">
+        <article data-reveal="1" style="display:flex;flex-wrap:wrap;gap:clamp(24px,3.4vw,60px);padding:clamp(30px,3.4vw,56px) 0;border-top:1px solid #E3DFD8">
+          <div style="flex:0 1 300px;min-width:240px">
+            <div style="aspect-ratio:4/3;background:#EDEAE4;position:relative">
+              <image-slot id="{{ cs.slotId }}" shape="rect" fit="cover" placeholder="Project image"></image-slot>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:0 24px;margin-top:20px">
+              <sc-for list="{{ cs.metrics }}" as="mt" hint-placeholder-count="3">
+                <div style="margin-bottom:10px">
+                  <div style="font-family:Newsreader,serif;font-size:25px;line-height:1;letter-spacing:-0.015em">{{ mt.value }}</div>
+                  <div style="font-size:9.5px;letter-spacing:0.13em;text-transform:uppercase;color:#9C9893;margin-top:6px">{{ mt.label }}</div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+          <div style="flex:1 1 380px;min-width:260px">
+            <div style="font-size:10.5px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:#C4162B;margin-bottom:14px">{{ cs.tag }}</div>
+            <h3 style="margin:0 0 26px;max-width:22ch;font-family:Newsreader,serif;font-weight:300;font-size:clamp(24px,2.6vw,38px);line-height:1.12;letter-spacing:-0.015em">{{ cs.title }}</h3>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:22px 36px">
+              <sc-for list="{{ cs.blocks }}" as="bl" hint-placeholder-count="4">
+                <div>
+                  <div style="font-size:9.5px;letter-spacing:0.14em;text-transform:uppercase;color:#9C9893;margin-bottom:8px">{{ bl.label }}</div>
+                  <p style="margin:0;font-size:14px;line-height:1.62;color:#57544F">{{ bl.text }}</p>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </article>
+      </sc-for>
+      <div style="border-top:1px solid #E3DFD8;padding-top:16px;font-size:10.5px;letter-spacing:0.1em;text-transform:uppercase;color:#A8A49E">Illustrative client scenarios — replace with verified, consented case data</div>
+    </div>
+  </section>
+
+  <!-- ══ WHY H&S ══ -->
+  <section data-screen-label="Why H&amp;S" style="background:#0D0D0F;color:#FFFFFF;padding:clamp(80px,9vw,150px) clamp(20px,4vw,48px)">
+    <div style="max-width:1320px;margin:0 auto">
+      <h2 data-reveal="1" style="margin:0 0 clamp(50px,5.5vw,84px);max-width:19ch;font-family:Newsreader,serif;font-weight:300;font-size:clamp(34px,4.8vw,72px);line-height:1.03;letter-spacing:-0.022em;text-wrap:balance">The difference is not access. It's knowing what to do with it.</h2>
+      <div style="display:flex;flex-wrap:wrap;gap:1px;background:rgba(255,255,255,0.14);border-top:1px solid rgba(255,255,255,0.14)">
+        <sc-for list="{{ differentiators }}" as="d" hint-placeholder-count="5">
+          <div style="flex:1 1 230px;background:#0D0D0F;padding:clamp(26px,2.8vw,40px) clamp(20px,2vw,30px)">
+            <div style="font-family:Newsreader,serif;font-size:13px;color:#C4162B;margin-bottom:24px">{{ d.num }}</div>
+            <h3 style="margin:0 0 14px;font-size:12.5px;font-weight:600;letter-spacing:0.15em;text-transform:uppercase">{{ d.title }}</h3>
+            <p style="margin:0;font-size:14px;line-height:1.64;color:rgba(255,255,255,0.58)">{{ d.text }}</p>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ SERVICES AS OUTCOMES ══ -->
+  <section data-screen-label="Services" style="padding:clamp(80px,9vw,150px) clamp(20px,4vw,48px)">
+    <div style="max-width:1320px;margin:0 auto">
+      <div style="margin-bottom:clamp(34px,3.6vw,52px)">
+        <div style="font-size:11px;font-weight:500;letter-spacing:0.22em;text-transform:uppercase;color:#C4162B;margin-bottom:16px">How We Work With You</div>
+        <h2 style="margin:0;max-width:16ch;font-family:Newsreader,serif;font-weight:300;font-size:clamp(34px,4.4vw,64px);line-height:1.05;letter-spacing:-0.02em">Start from what you want to do.</h2>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:0;border-bottom:1px solid #E3DFD8;margin-bottom:clamp(28px,3vw,44px)">
+        <sc-for list="{{ serviceTabs }}" as="s" hint-placeholder-count="4">
+          <button onClick="{{ s.pick }}" style="appearance:none;background:none;cursor:pointer;border:0;padding:16px 22px 15px;font-size:11.5px;font-weight:600;letter-spacing:0.13em;text-transform:uppercase;font-family:Archivo,sans-serif;transition:all 240ms ease;{{ s.style }}">{{ s.label }}</button>
+        </sc-for>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:clamp(24px,3.4vw,60px);align-items:flex-start">
+        <div style="flex:1 1 320px;min-width:0">
+          <div style="font-family:Newsreader,serif;font-weight:300;font-size:clamp(24px,2.6vw,38px);line-height:1.16;letter-spacing:-0.015em;max-width:18ch">{{ serviceHeadline }}</div>
+          <p style="margin:20px 0 28px;max-width:44ch;font-size:15px;line-height:1.68;color:#57544F">{{ serviceBody }}</p>
+          <a href="#talk" style="display:inline-flex;padding:16px 28px;background:#0D0D0F;color:#FFFFFF;font-size:11.5px;font-weight:600;letter-spacing:0.13em;text-transform:uppercase;transition:background 260ms ease" style-hover="background:#C4162B;color:#FFFFFF">{{ serviceCta }}</a>
+        </div>
+        <div style="flex:1 1 380px;min-width:0">
+          <sc-for list="{{ serviceItems }}" as="si" hint-placeholder-count="4">
+            <div style="display:flex;gap:clamp(16px,2vw,30px);padding:22px 0;border-top:1px solid #E3DFD8">
+              <div style="flex:0 0 34px;font-family:Newsreader,serif;font-size:13px;color:#C4162B;padding-top:3px">{{ si.num }}</div>
+              <div style="flex:1;min-width:0">
+                <div style="font-size:12.5px;font-weight:600;letter-spacing:0.13em;text-transform:uppercase;margin-bottom:8px">{{ si.title }}</div>
+                <p style="margin:0;font-size:14px;line-height:1.62;color:#57544F">{{ si.text }}</p>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ ADVISORS ══ -->
+  <section id="advisors" data-screen-label="Advisors" style="background:#F2EFEA;padding:clamp(80px,9vw,150px) clamp(20px,4vw,48px)">
+    <div style="max-width:1320px;margin:0 auto">
+      <div style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-end;justify-content:space-between;margin-bottom:clamp(36px,3.8vw,56px)">
+        <div>
+          <div style="font-size:11px;font-weight:500;letter-spacing:0.22em;text-transform:uppercase;color:#C4162B;margin-bottom:16px">The People</div>
+          <h2 style="margin:0;max-width:17ch;font-family:Newsreader,serif;font-weight:300;font-size:clamp(34px,4.4vw,64px);line-height:1.05;letter-spacing:-0.02em">You are advised by a person, not an algorithm.</h2>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(272px,1fr));gap:clamp(18px,2vw,32px)">
+        <sc-for list="{{ advisors }}" as="ad" hint-placeholder-count="3">
+          <article style="background:#FFFFFF;border:1px solid #E3DFD8;display:flex;flex-direction:column">
+            <div style="aspect-ratio:3/4;background:#EDEAE4;position:relative">
+              <image-slot id="{{ ad.slotId }}" shape="rect" fit="cover" placeholder="Advisor portrait"></image-slot>
+            </div>
+            <div style="padding:clamp(20px,2vw,28px);display:flex;flex-direction:column;flex:1">
+              <h3 style="margin:0;font-family:Newsreader,serif;font-weight:400;font-size:26px;letter-spacing:-0.012em">{{ ad.name }}</h3>
+              <div style="margin-top:7px;font-size:10.5px;font-weight:500;letter-spacing:0.15em;text-transform:uppercase;color:#C4162B">{{ ad.role }}</div>
+              <p style="margin:18px 0 20px;font-family:Newsreader,serif;font-size:17px;font-weight:300;line-height:1.5;color:#2B2926">{{ ad.quote }}</p>
+              <div style="border-top:1px solid #EFECE6;padding-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:14px">
+                <sc-for list="{{ ad.facts }}" as="f" hint-placeholder-count="4">
+                  <div>
+                    <div style="font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#9C9893">{{ f.label }}</div>
+                    <div style="font-size:13px;margin-top:5px;color:#2B2926;line-height:1.4">{{ f.value }}</div>
+                  </div>
+                </sc-for>
+              </div>
+              <a href="#talk" style="margin-top:22px;display:inline-flex;align-items:center;justify-content:space-between;padding:13px 18px;border:1px solid #E3DFD8;font-size:11px;font-weight:600;letter-spacing:0.13em;text-transform:uppercase;transition:background 240ms ease,color 240ms ease,border-color 240ms ease" style-hover="background:#0D0D0F;border-color:#0D0D0F;color:#FFFFFF">Meet {{ ad.first }} <span style="font-family:Newsreader,serif;font-size:16px">→</span></a>
+            </div>
+          </article>
+        </sc-for>
+      </div>
+
+      <div style="margin-top:clamp(48px,5vw,80px);display:flex;flex-wrap:wrap;gap:1px;background:#E3DFD8;border:1px solid #E3DFD8">
+        <sc-for list="{{ testimonials }}" as="tm" hint-placeholder-count="2">
+          <div style="flex:1 1 320px;min-width:260px;background:#FFFFFF;padding:clamp(28px,3vw,46px)">
+            <div style="font-family:Newsreader,serif;font-weight:300;font-size:clamp(20px,1.9vw,26px);line-height:1.42;letter-spacing:-0.01em;text-wrap:pretty">{{ tm.quote }}</div>
+            <div style="margin-top:26px;display:flex;flex-wrap:wrap;gap:0 26px;align-items:baseline">
+              <div>
+                <div style="font-size:12.5px;font-weight:600;letter-spacing:0.08em">{{ tm.name }}</div>
+                <div style="font-size:10.5px;letter-spacing:0.13em;text-transform:uppercase;color:#9C9893;margin-top:5px">{{ tm.role }}</div>
+              </div>
+              <div style="margin-left:auto;text-align:right">
+                <div style="font-family:Newsreader,serif;font-size:24px;color:#C4162B">{{ tm.metric }}</div>
+                <div style="font-size:9.5px;letter-spacing:0.13em;text-transform:uppercase;color:#9C9893;margin-top:4px">{{ tm.metricLabel }}</div>
+              </div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ INSIGHTS ══ -->
+  <section id="insights" data-screen-label="Market intelligence" style="padding:clamp(80px,9vw,150px) clamp(20px,4vw,48px)">
+    <div style="max-width:1320px;margin:0 auto">
+      <div style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-end;justify-content:space-between;margin-bottom:clamp(30px,3.2vw,46px);padding-bottom:26px;border-bottom:1px solid #0D0D0F">
+        <h2 style="margin:0;font-family:Newsreader,serif;font-weight:300;font-size:clamp(30px,3.6vw,52px);line-height:1.05;letter-spacing:-0.02em">H&amp;S Market Intelligence</h2>
+        <div style="display:flex;flex-wrap:wrap;gap:18px">
+          <sc-for list="{{ insightCats }}" as="ic" hint-placeholder-count="6">
+            <span style="font-size:10.5px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:#75726D">{{ ic }}</span>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-wrap:wrap;gap:clamp(24px,3vw,52px)">
+        <article style="flex:1.4 1 420px;min-width:280px">
+          <div style="aspect-ratio:16/10;background:#EDEAE4;position:relative;margin-bottom:24px">
+            <image-slot id="insight-hero" shape="rect" fit="cover" placeholder="Report cover image"></image-slot>
+          </div>
+          <div style="font-size:10.5px;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;color:#C4162B;margin-bottom:14px">Market Report · Q3</div>
+          <h3 style="margin:0 0 16px;max-width:20ch;font-family:Newsreader,serif;font-weight:300;font-size:clamp(26px,2.8vw,40px);line-height:1.1;letter-spacing:-0.018em">Where Dubai's next rental growth is coming from</h3>
+          <p style="margin:0 0 20px;max-width:56ch;font-size:15px;line-height:1.68;color:#57544F">A community-level read on supply arriving over the next 24 months, and which submarkets are positioned to absorb it without compressing rents.</p>
+          <a href="#insights" style="font-size:11.5px;font-weight:600;letter-spacing:0.13em;text-transform:uppercase;border-bottom:1px solid #C4162B;padding-bottom:6px">Read the report →</a>
+        </article>
+        <div style="flex:1 1 300px;min-width:260px">
+          <sc-for list="{{ articles }}" as="ar" hint-placeholder-count="4">
+            <a href="#insights" style="display:block;padding:22px 0;border-top:1px solid #E3DFD8" style-hover="opacity:0.66">
+              <div style="font-size:10px;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;color:#C4162B;margin-bottom:10px">{{ ar.cat }}</div>
+              <div style="font-family:Newsreader,serif;font-size:21px;font-weight:400;line-height:1.24;letter-spacing:-0.012em;max-width:30ch">{{ ar.title }}</div>
+              <div style="margin-top:10px;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#9C9893">{{ ar.meta }}</div>
+            </a>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ FINAL CTA ══ -->
+  <section id="talk" data-screen-label="Final CTA" style="background:#0D0D0F;color:#FFFFFF;padding:clamp(90px,10vw,170px) clamp(20px,4vw,48px)">
+    <div style="max-width:1100px;margin:0 auto;text-align:center">
+      <h2 style="margin:0 auto;max-width:17ch;font-family:Newsreader,serif;font-weight:300;font-size:clamp(36px,5.4vw,82px);line-height:1.02;letter-spacing:-0.024em;text-wrap:balance">Your next property decision deserves better information.</h2>
+      <p style="margin:clamp(24px,2.8vw,38px) auto 0;max-width:58ch;font-size:clamp(15px,1.15vw,17.5px);line-height:1.68;color:rgba(255,255,255,0.66)">Tell us what you're trying to achieve. We'll help you understand your options, identify the opportunities worth considering, and make the next step clearer.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin-top:clamp(32px,3.6vw,48px)">
+        <a href="#engine" style="display:inline-flex;padding:18px 34px;background:#C4162B;color:#FFFFFF;font-size:12px;font-weight:600;letter-spacing:0.13em;text-transform:uppercase;transition:background 260ms ease,color 260ms ease" style-hover="background:#FFFFFF;color:#0D0D0F">Find my opportunity</a>
+        <a href="#talk" style="display:inline-flex;padding:18px 34px;border:1px solid rgba(255,255,255,0.4);color:#FFFFFF;font-size:12px;font-weight:600;letter-spacing:0.13em;text-transform:uppercase;transition:background 260ms ease" style-hover="background:rgba(255,255,255,0.12)">Speak with H&amp;S</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ FAQ / ANSWER BLOCKS ══ -->
+  <section data-screen-label="Answer blocks" style="padding:clamp(70px,8vw,130px) clamp(20px,4vw,48px);background:#FAF8F5">
+    <div style="max-width:1320px;margin:0 auto;display:flex;flex-wrap:wrap;gap:clamp(24px,3.4vw,70px)">
+      <div style="flex:0 1 300px;min-width:240px">
+        <h2 style="margin:0;font-family:Newsreader,serif;font-weight:300;font-size:clamp(26px,2.8vw,40px);line-height:1.1;letter-spacing:-0.018em">Questions buyers ask us first</h2>
+      </div>
+      <div style="flex:1 1 420px;min-width:280px">
+        <sc-for list="{{ faqs }}" as="q" hint-placeholder-count="4">
+          <div style="border-top:1px solid #E3DFD8">
+            <button onClick="{{ q.toggle }}" style="width:100%;appearance:none;background:none;border:0;cursor:pointer;text-align:left;padding:22px 0;display:flex;align-items:baseline;justify-content:space-between;gap:20px;font-family:Newsreader,serif;font-size:clamp(18px,1.6vw,23px);font-weight:400;color:#0D0D0F;letter-spacing:-0.008em" style-hover="color:#C4162B">
+              <span>{{ q.q }}</span>
+              <span style="flex-shrink:0;font-size:19px;color:#C4162B">{{ q.sign }}</span>
+            </button>
+            <div style="overflow:hidden;transition:max-height 400ms ease,opacity 300ms ease;{{ q.panelStyle }}">
+              <p style="margin:0 0 24px;max-width:62ch;font-size:14.5px;line-height:1.7;color:#57544F">{{ q.a }}</p>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ FOOTER ══ -->
+  <footer style="background:#0D0D0F;color:rgba(255,255,255,0.6);padding:clamp(50px,5.5vw,80px) clamp(20px,4vw,48px) clamp(32px,3.4vw,48px);border-top:1px solid rgba(255,255,255,0.12)">
+    <div style="max-width:1320px;margin:0 auto">
+      <div style="display:flex;flex-wrap:wrap;gap:clamp(28px,4vw,70px);padding-bottom:clamp(34px,3.6vw,54px);border-bottom:1px solid rgba(255,255,255,0.12)">
+        <div style="flex:1 1 260px;min-width:220px">
+          <img src="assets/hs-logo-light.png" alt="H&amp;S Real Estate Dubai" style="height:46px;width:auto;display:block;margin-bottom:22px">
+          <p style="margin:0;max-width:34ch;font-size:13.5px;line-height:1.66">Dubai residential and investment advisory. Sales, leasing, off-plan, valuation and portfolio strategy.</p>
+        </div>
+        <div style="flex:0 1 160px">
+          <div style="font-size:10px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:#FFFFFF;margin-bottom:16px">Decide</div>
+          <a href="#engine" style="display:block;color:rgba(255,255,255,0.6);font-size:13.5px;padding:5px 0" style-hover="color:#FFFFFF">Decision Engine</a>
+          <a href="#xray" style="display:block;color:rgba(255,255,255,0.6);font-size:13.5px;padding:5px 0" style-hover="color:#FFFFFF">Property X-Ray</a>
+          <a href="#communities" style="display:block;color:rgba(255,255,255,0.6);font-size:13.5px;padding:5px 0" style-hover="color:#FFFFFF">Communities</a>
+          <a href="#talk" style="display:block;color:rgba(255,255,255,0.6);font-size:13.5px;padding:5px 0" style-hover="color:#FFFFFF">Valuation</a>
+        </div>
+        <div style="flex:0 1 160px">
+          <div style="font-size:10px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:#FFFFFF;margin-bottom:16px">Explore</div>
+          <a href="#opportunities" style="display:block;color:rgba(255,255,255,0.6);font-size:13.5px;padding:5px 0" style-hover="color:#FFFFFF">Opportunities</a>
+          <a href="#market" style="display:block;color:rgba(255,255,255,0.6);font-size:13.5px;padding:5px 0" style-hover="color:#FFFFFF">Market</a>
+          <a href="#insights" style="display:block;color:rgba(255,255,255,0.6);font-size:13.5px;padding:5px 0" style-hover="color:#FFFFFF">Insights</a>
+          <a href="#advisors" style="display:block;color:rgba(255,255,255,0.6);font-size:13.5px;padding:5px 0" style-hover="color:#FFFFFF">Advisors</a>
+        </div>
+        <div style="flex:1 1 240px;min-width:220px">
+          <div style="font-size:10px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:#FFFFFF;margin-bottom:16px">Talk to us</div>
+          <p style="margin:0 0 16px;font-size:13.5px;line-height:1.66">Office address, telephone and RERA licence number — <span style="color:#C4162B">verified details required</span>.</p>
+          <a href="#talk" style="display:inline-flex;padding:13px 22px;border:1px solid rgba(255,255,255,0.3);color:#FFFFFF;font-size:11px;font-weight:600;letter-spacing:0.13em;text-transform:uppercase" style-hover="background:rgba(255,255,255,0.1)">Book a consultation</a>
+        </div>
+      </div>
+      <div style="padding-top:24px;display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;font-size:11px;letter-spacing:0.08em;color:rgba(255,255,255,0.4)">
+        <span>© H&amp;S Real Estate Dubai. Concept design — figures illustrative.</span>
+        <span>Privacy · Terms · RERA</span>
+      </div>
+    </div>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;engineVariant&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;overlay&quot;,&quot;inline&quot;],&quot;default&quot;:&quot;overlay&quot;,&quot;tsType&quot;:&quot;'overlay' | 'inline'&quot;,&quot;section&quot;:&quot;Layout&quot;},&quot;mapDefaultArea&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;marina&quot;,&quot;downtown&quot;,&quot;palm&quot;,&quot;businessbay&quot;,&quot;jvc&quot;,&quot;hills&quot;,&quot;creek&quot;,&quot;ranches&quot;,&quot;jlt&quot;,&quot;south&quot;],&quot;default&quot;:&quot;hills&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Content&quot;},&quot;showDataDisclaimer&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Content&quot;}}">
+const RED = '#C4162B';
+const INK = '#0D0D0F';
+const LINE = '#E3DFD8';
+
+const AREAS = [
+  { id: 'marina', name: 'Dubai Marina', lat: 25.0805, lng: 55.1403, tags: ['High Yield', 'Liquid'], price: 'AED 1.1M – 6.5M', ppsf: 'AED 1,780 / sqft', yld: '6.4%', lifestyle: 'Waterfront urban', demand: 'Tenant-led, very high', maturity: 'Mature', score: 78,
+    summary: 'Dubai\u2019s deepest rental market. Consistent tenant demand, high turnover and the easiest community in the city to exit quickly.',
+    view: 'Best used for income and liquidity rather than outsized capital growth. Building quality varies sharply tower to tower.' },
+  { id: 'downtown', name: 'Downtown Dubai', lat: 25.1972, lng: 55.2744, tags: ['Luxury', 'Capital Growth'], price: 'AED 1.6M – 30M', ppsf: 'AED 2,450 / sqft', yld: '5.2%', lifestyle: 'Central, hospitality-led', demand: 'International buyer-led', maturity: 'Mature', score: 74,
+    summary: 'The address premium market. Lower yields, but the most resilient pricing in a correction and the strongest short-let performance.',
+    view: 'Buy for asset quality and hold. Entry level stock is crowded — the value sits in low-supply views and larger layouts.' },
+  { id: 'palm', name: 'Palm Jumeirah', lat: 25.1124, lng: 55.139, tags: ['Luxury', 'Trophy'], price: 'AED 2.4M – 120M', ppsf: 'AED 3,100 / sqft', yld: '4.6%', lifestyle: 'Resort waterfront', demand: 'Ultra-prime, global', maturity: 'Mature', score: 71,
+    summary: 'A genuinely supply-constrained trophy market. Villa and signature-villa pricing behaves more like prime London than like Dubai.',
+    view: 'A wealth-preservation asset, not a yield play. Beachfront villa stock is the segment with the least downside.' },
+  { id: 'businessbay', name: 'Business Bay', lat: 25.1857, lng: 55.2629, tags: ['High Yield', 'Off-Plan'], price: 'AED 900K – 7M', ppsf: 'AED 1,690 / sqft', yld: '6.8%', lifestyle: 'Urban, work-adjacent', demand: 'Young professional', maturity: 'Maturing', score: 76,
+    summary: 'Downtown adjacency at a discount, with a heavy handover pipeline. Yields are strong where the building is well managed.',
+    view: 'Selectivity matters more here than anywhere. Developer and service-charge diligence changes the outcome by two points of yield.' },
+  { id: 'jvc', name: 'Jumeirah Village Circle', lat: 25.057, lng: 55.2075, tags: ['High Yield', 'Emerging'], price: 'AED 600K – 2.4M', ppsf: 'AED 1,180 / sqft', yld: '7.6%', lifestyle: 'Affordable community', demand: 'Domestic tenant', maturity: 'Maturing', score: 80,
+    summary: 'The most accessible entry point into Dubai income property, and currently the highest-yielding mainstream community.',
+    view: 'The strongest cash-on-cash story on this map. Supply is the risk — favour completed, well-let stock over new launches.' },
+  { id: 'hills', name: 'Dubai Hills Estate', lat: 25.1017, lng: 55.245, tags: ['Family', 'Capital Growth'], price: 'AED 1.3M – 25M', ppsf: 'AED 1,920 / sqft', yld: '5.6%', lifestyle: 'Green, family-led', demand: 'End-user family', maturity: 'Maturing', score: 82,
+    summary: 'The benchmark master community for families: schools, parks, a golf course and a mall, with genuine end-user depth.',
+    view: 'Our highest-conviction balanced hold. End-user demand means pricing is less volatile than investor-heavy districts.' },
+  { id: 'creek', name: 'Dubai Creek Harbour', lat: 25.2, lng: 55.347, tags: ['Off-Plan', 'Capital Growth'], price: 'AED 1.2M – 9M', ppsf: 'AED 2,050 / sqft', yld: '5.4%', lifestyle: 'Waterfront masterplan', demand: 'Investor-led', maturity: 'Emerging', score: 73,
+    summary: 'A long-horizon waterfront masterplan. Value is tied to infrastructure delivery rather than to today\u2019s rental market.',
+    view: 'Only sensible on a five-year-plus view and with payment-plan leverage. Phase selection is the whole decision.' },
+  { id: 'ranches', name: 'Arabian Ranches', lat: 25.048, lng: 55.27, tags: ['Family', 'Low Volatility'], price: 'AED 2.6M – 20M', ppsf: 'AED 1,560 / sqft', yld: '5.0%', lifestyle: 'Suburban villa', demand: 'Long-lease family', maturity: 'Mature', score: 77,
+    summary: 'Established villa living with low tenant churn and residents who tend to stay for years rather than months.',
+    view: 'The defensive villa allocation. Lower yield, but the lowest vacancy risk of any community we track.' },
+  { id: 'jlt', name: 'Jumeirah Lake Towers', lat: 25.069, lng: 55.143, tags: ['High Yield', 'Value'], price: 'AED 750K – 4M', ppsf: 'AED 1,420 / sqft', yld: '7.1%', lifestyle: 'Urban value', demand: 'Professional tenant', maturity: 'Mature', score: 79,
+    summary: 'Marina adjacency without the Marina premium, with metro access and consistently strong occupancy.',
+    view: 'Reliable income at a sensible basis. Older towers need a genuine service-charge and chiller review before offer.' },
+  { id: 'south', name: 'Dubai South', lat: 24.96, lng: 55.15, tags: ['Emerging', 'Off-Plan'], price: 'AED 550K – 3M', ppsf: 'AED 980 / sqft', yld: '7.0%', lifestyle: 'New infrastructure belt', demand: 'Early-stage', maturity: 'Early', score: 68,
+    summary: 'The airport and logistics corridor. Lowest entry price in the city, and correspondingly the longest runway.',
+    view: 'Speculative until employment density arrives. Size the position accordingly — this is a satellite, not a core holding.' },
+];
+
+const COLLECTIONS = [
+  { id: 'yield', label: 'High Yield',
+    thesis: 'Income first: assets that let quickly and re-let without a rent concession.',
+    body: 'Selected for occupancy history, service-charge efficiency and tenant depth rather than headline gross yield. Every property here has been let within the last 18 months.',
+    items: [
+      { badge: 'Income', name: 'Belgravia Heights', area: 'Jumeirah Village Circle', price: 'AED 1.05M', type: '1 Bed', yield: '7.8%', thesis: 'Managed building with a stable rent roll and below-average service charges — the cleanest cash-on-cash entry we hold.', slotId: 'op-y1' },
+      { badge: 'Income', name: 'Goldcrest Views', area: 'Jumeirah Lake Towers', price: 'AED 1.4M', type: '2 Bed', yield: '7.2%', thesis: 'Metro-adjacent, chronically under-supplied at two bedrooms. Re-lets in under three weeks in our experience.', slotId: 'op-y2' },
+      { badge: 'Income', name: 'Executive Bay', area: 'Business Bay', price: 'AED 1.25M', type: '1 Bed', yield: '6.9%', thesis: 'Corporate tenant catchment with short vacancy windows. Underwrite the chiller arrangement before offer.', slotId: 'op-y3' },
+    ] },
+  { id: 'offplan', label: 'Off-Plan',
+    thesis: 'Early-stage positions where the payment plan does real work.',
+    body: 'We only brief off-plan where the developer has a delivery record we can evidence and where the phase is priced below the completed comparable, not above it.',
+    items: [
+      { badge: 'Q4 2028', name: 'Creek Waters Phase 3', area: 'Dubai Creek Harbour', price: 'AED 1.9M', type: '2 Bed', yield: 'n/a', thesis: 'Waterfront phase priced under the delivered comparable, with a 60/40 plan that defers most capital past handover.', slotId: 'op-o1' },
+      { badge: 'Q2 2027', name: 'The Acres Reserve', area: 'Dubailand', price: 'AED 5.2M', type: '4 Bed Villa', yield: 'n/a', thesis: 'Villa supply is the tighter side of the market. Early phase pricing with a masterplan already partially delivered.', slotId: 'op-o2' },
+      { badge: 'Q1 2028', name: 'South Bay Terraces', area: 'Dubai South', price: 'AED 1.6M', type: '3 Bed', yield: 'n/a', thesis: 'A long-horizon infrastructure bet. Sensible only with the payment plan and a five-year-plus holding period.', slotId: 'op-o3' },
+    ] },
+  { id: 'luxury', label: 'Luxury Collection',
+    thesis: 'Scarce assets where the constraint is supply, not demand.',
+    body: 'Prime and ultra-prime stock is judged on irreplaceability: frontage, ceiling height, view corridor and floor plate. Yield is a secondary consideration.',
+    items: [
+      { badge: 'Prime', name: 'Signature Villa, Frond K', area: 'Palm Jumeirah', price: 'AED 34M', type: '5 Bed Villa', yield: '3.9%', thesis: 'Beachfront frond with a protected view corridor. Finite stock — fewer than a dozen trade in a typical year.', slotId: 'op-l1' },
+      { badge: 'Prime', name: 'Il Primo Full Floor', area: 'Downtown Dubai', price: 'AED 26M', type: '5 Bed', yield: '4.2%', thesis: 'Full-floor Burj-facing plate. The resilience case is the address, which holds pricing through soft cycles.', slotId: 'op-l2' },
+      { badge: 'Prime', name: 'Jumeirah Bay Plot', area: 'Jumeirah Bay Island', price: 'AED 62M', type: 'Land', yield: 'n/a', thesis: 'Development plot on a closed island. Land is the only genuinely non-replicable asset class in the city.', slotId: 'op-l3' },
+    ] },
+  { id: 'family', label: 'Family Lifestyle',
+    thesis: 'Built for living in — and therefore for lower volatility.',
+    body: 'End-user communities price differently from investor districts. School catchment, plot size and commute define resale demand more than the finish level does.',
+    items: [
+      { badge: 'End-user', name: 'Maple III Townhouse', area: 'Dubai Hills Estate', price: 'AED 4.6M', type: '4 Bed Townhouse', yield: '5.4%', thesis: 'Walkable to two schools and the park network. The most consistently resold layout in the community.', slotId: 'op-f1' },
+      { badge: 'End-user', name: 'Palma, Arabian Ranches', area: 'Arabian Ranches', price: 'AED 5.9M', type: '4 Bed Villa', yield: '4.9%', thesis: 'Long-lease tenant profile and minimal churn. Defensive allocation with an established rental floor.', slotId: 'op-f2' },
+      { badge: 'End-user', name: 'Sidra Garden Backing', area: 'Dubai Hills Estate', price: 'AED 7.8M', type: '5 Bed Villa', yield: '4.7%', thesis: 'Park-backing plot — the premium for a green outlook has held through every recent cycle we have tracked.', slotId: 'op-f3' },
+    ] },
+  { id: 'radar', label: 'Under the Radar',
+    thesis: 'Priced on yesterday\u2019s perception rather than today\u2019s fundamentals.',
+    body: 'Communities and buildings the market has not yet re-rated — usually because of an infrastructure change, a management change or a supply shift that has not reached listing prices.',
+    items: [
+      { badge: 'Re-rating', name: 'Al Furjan Low-Rise', area: 'Al Furjan', price: 'AED 1.15M', type: '2 Bed', yield: '7.4%', thesis: 'Metro delivery has changed the commute maths, but listing prices have not fully repriced the catchment yet.', slotId: 'op-r1' },
+      { badge: 'Re-rating', name: 'Mirdif Villa Cluster', area: 'Mirdif', price: 'AED 3.4M', type: '4 Bed Villa', yield: '6.1%', thesis: 'Overlooked older villa stock with large plots. Renovation spread between tired and refurbished pricing is wide.', slotId: 'op-r2' },
+      { badge: 'Re-rating', name: 'Town Square Resale', area: 'Town Square', price: 'AED 1.9M', type: '3 Bed Townhouse', yield: '6.3%', thesis: 'Family stock at apartment pricing. Second-hand market is thin, which creates negotiating room on motivated sales.', slotId: 'op-r3' },
+    ] },
+];
+
+const SERVICES = [
+  { id: 'buy', label: 'I want to buy',
+    headline: 'A search narrowed by evidence, not by inventory.',
+    body: 'We start with your constraints — budget, commute, schools, timeline — and eliminate. Most clients see fewer than eight properties before deciding.',
+    cta: 'Find properties that fit',
+    items: [
+      { num: '01', title: 'Requirement definition', text: 'A structured brief so viewings are a shortlist, not a tour of the city.' },
+      { num: '02', title: 'Off-market access', text: 'Owner and developer relationships that surface stock before it reaches the portals.' },
+      { num: '03', title: 'Mortgage structuring', text: 'Introductions to lenders and a realistic view of what your profile will actually clear.' },
+      { num: '04', title: 'Negotiation and transfer', text: 'Price, terms and the DLD process managed end to end.' },
+    ] },
+  { id: 'invest', label: 'I want to invest',
+    headline: 'Portfolio decisions modelled before they are made.',
+    body: 'Yield, void assumptions, service charges and exit liquidity — underwritten in the same format every time, so two opportunities can actually be compared.',
+    cta: 'Find my investment',
+    items: [
+      { num: '01', title: 'Investment strategy', text: 'Income, growth or blended — defined before we look at a single property.' },
+      { num: '02', title: 'Yield and risk analysis', text: 'Net, not gross. Service charges, voids and management costs included.' },
+      { num: '03', title: 'Portfolio advisory', text: 'Concentration, currency and community exposure reviewed as one position.' },
+      { num: '04', title: 'Lease-up and management', text: 'Tenant placement and ongoing oversight after handover.' },
+    ] },
+  { id: 'sell', label: 'I want to sell',
+    headline: 'Discover what your property is really worth.',
+    body: 'A valuation anchored in completed transactions, not asking prices — and a positioning strategy for the buyer most likely to pay for your specific asset.',
+    cta: 'Value my property',
+    items: [
+      { num: '01', title: 'Evidence-based valuation', text: 'Comparable completed sales, adjusted for floor, view and condition.' },
+      { num: '02', title: 'Positioning strategy', text: 'Who the buyer is, where they look, and what the asset needs to look like.' },
+      { num: '03', title: 'Presentation', text: 'Photography, floor plans and staging where the spread justifies it.' },
+      { num: '04', title: 'Negotiation', text: 'Offer management against a defined reserve, not against the first bidder.' },
+    ] },
+  { id: 'relocate', label: 'I want to relocate',
+    headline: 'The property decision is only part of the move.',
+    body: 'Visas, schooling, banking and the sequencing between them. We handle the property and coordinate the rest so the timeline holds.',
+    cta: 'Plan my relocation',
+    items: [
+      { num: '01', title: 'Area orientation', text: 'Commute, schooling and lifestyle mapped against your shortlist before viewings.' },
+      { num: '02', title: 'Visa and residency', text: 'Guidance on the property-linked routes and what each requires.' },
+      { num: '03', title: 'Banking and mortgage', text: 'Account opening and lender introductions for new arrivals.' },
+      { num: '04', title: 'Settling in', text: 'Schools, utilities, movers and handover coordination.' },
+    ] },
+];
+
+const STATS = [
+  { to: 35, prefix: 'AED ', suffix: 'B+', label: 'Transaction value' },
+  { to: 12000, prefix: '', suffix: '+', label: 'Clients advised' },
+  { to: 35, prefix: '', suffix: '+', label: 'Years in market' },
+  { to: 100, prefix: '', suffix: '+', label: 'Industry awards' },
+  { to: 500, prefix: '', suffix: '+', label: 'Projects covered' },
+  { to: 25, prefix: '', suffix: '+', label: 'Developer relationships' },
+];
+
+const FAQ_DATA = [
+  { q: 'Is Dubai real estate a good investment?', a: 'It can be, but not uniformly. Dubai combines no annual property tax, full foreign freehold ownership in designated areas and gross yields that are high by global standards. The variance between communities is the real story: two apartments bought in the same month at the same price can differ by more than two points of net yield once service charges, voids and management are counted. The decision is community and building specific, not city-wide.' },
+  { q: 'What is a realistic rental yield in Dubai?', a: 'Gross yields in mainstream apartment communities typically sit in the 6–8% band, with prime and ultra-prime closer to 4–5%. Net yield is the number that matters: deduct service charges, an allowance for vacancy between tenancies and management fees. We underwrite every opportunity on a net basis before recommending it.' },
+  { q: 'What is the best area to invest in Dubai?', a: 'There is no single answer — it depends on whether you are optimising for income, capital growth or occupation. For cash-on-cash income, affordable managed communities such as JVC and JLT lead. For lower-volatility family-led demand, Dubai Hills Estate and the established villa communities. For capital preservation, prime waterfront. Our community map sets out the profile of each.' },
+  { q: 'Can foreigners buy property in Dubai?', a: 'Yes, in designated freehold areas, which cover most of the communities investors consider. Ownership is registered with the Dubai Land Department. Property ownership above certain value thresholds can also support residency routes; the requirements change periodically, so we confirm current criteria case by case.' },
+];
+
+class Component extends DCLogic {
+  state = {
+    navSolid: false,
+    mobileMenuOpen: false,
+    step: 1,
+    goal: null,
+    budget: null,
+    priorities: [],
+    collection: 'yield',
+    service: 'buy',
+    areaId: null,
+    xrayAreaId: null,
+    xrayType: 'Apartment',
+    xrayBeds: 2,
+    xrayPrice: 2400000,
+    xrayRun: 0,
+    counterT: 0,
+    faqOpen: 0,
+  };
+
+  componentDidMount() {
+    this._onScroll = () => {
+      const solid = window.scrollY > 90;
+      if (solid !== this.state.navSolid) this.setState({ navSolid: solid });
+    };
+    window.addEventListener('scroll', this._onScroll, { passive: true });
+    this._onScroll();
+
+    // scroll reveals + bar growth + counters
+    requestAnimationFrame(() => {
+      const reveals = Array.from(document.querySelectorAll('[data-reveal]'));
+      reveals.forEach((el) => {
+        const r = el.getBoundingClientRect();
+        if (r.top > window.innerHeight * 0.92) {
+          el.style.opacity = '0';
+          el.style.transform = 'translateY(16px)';
+          el.style.transition = 'opacity 700ms ease, transform 700ms cubic-bezier(0.2,0.7,0.2,1)';
+        }
+      });
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((e) => {
+          if (!e.isIntersecting) return;
+          const el = e.target;
+          if (el.hasAttribute('data-reveal')) {
+            el.style.opacity = '1';
+            el.style.transform = 'none';
+          }
+          if (el.hasAttribute('data-counters')) this.startCounters();
+          if (el.hasAttribute('data-charts')) this.growBars(el);
+          io.unobserve(el);
+        });
+      }, { threshold: 0.15 });
+      reveals.forEach((el) => io.observe(el));
+      document.querySelectorAll('[data-counters]').forEach((el) => io.observe(el));
+      this._io = io;
+    });
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this._onScroll);
+    if (this._io) this._io.disconnect();
+    if (this._raf) cancelAnimationFrame(this._raf);
+  }
+
+  startCounters() {
+    if (this._counting) return;
+    this._counting = true;
+    const dur = 1500;
+    const t0 = performance.now();
+    const tick = (now) => {
+      const p = Math.min(1, (now - t0) / dur);
+      const eased = 1 - Math.pow(1 - p, 3);
+      this.setState({ counterT: eased });
+      if (p < 1) this._raf = requestAnimationFrame(tick);
+    };
+    this._raf = requestAnimationFrame(tick);
+  }
+
+  area() { return AREAS.find((a) => a.id === (this.state.areaId || this.props.mapDefaultArea || 'hills')) || AREAS[5]; }
+  xrayArea() { return AREAS.find((a) => a.id === (this.state.xrayAreaId || this.props.mapDefaultArea || 'hills')) || AREAS[5]; }
+
+  money(n) {
+    if (n >= 1000000) {
+      const m = n / 1000000;
+      return 'AED ' + (m >= 10 ? m.toFixed(1).replace(/\.0$/, '') : m.toFixed(2).replace(/0$/, '')) + 'M';
+    }
+    return 'AED ' + Math.round(n / 1000) + 'K';
+  }
+
+  xrayResult() {
+    const a = this.xrayArea();
+    const typeAdj = { Apartment: 0, Townhouse: 2, Villa: 3, 'Off-Plan': -3 }[this.state.xrayType] || 0;
+    const p = this.state.xrayPrice;
+    const band = p < 1200000 ? 4 : p < 4000000 ? 2 : p < 12000000 ? -1 : -4;
+    const bedAdj = [-2, 0, 2, 1, -1][Math.min(4, Math.max(0, this.state.xrayBeds - 1))];
+    let score = Math.round(a.score + typeAdj + band + bedAdj);
+    score = Math.max(41, Math.min(94, score));
+    const baseYield = parseFloat(a.yld);
+    const est = Math.max(3.2, baseYield + (p < 1500000 ? 0.4 : p > 8000000 ? -0.9 : 0) + (this.state.xrayType === 'Villa' ? -0.5 : 0));
+    const rent = Math.round((p * est) / 100 / 1000) * 1000;
+    const verdict = score >= 80 ? 'Strong investment profile' : score >= 68 ? 'Sound, with conditions' : score >= 55 ? 'Proceed selectively' : 'Weak at this price';
+    return { area: a, score, est, rent, verdict };
+  }
+
+  renderVals() {
+    const s = this.state;
+    const navSolid = s.navSolid;
+    const engineVariant = this.props.engineVariant || 'overlay';
+
+    // ── engine
+    const goals = [
+      { id: 'buy', num: '01', title: 'Buy a home', sub: 'I want to live in it.' },
+      { id: 'invest', num: '02', title: 'Invest', sub: 'I want a return on capital.' },
+      { id: 'sell', num: '03', title: 'Sell', sub: 'I want to exit or value an asset.' },
+      { id: 'relocate', num: '04', title: 'Relocate', sub: 'I am moving to Dubai.' },
+      { id: 'advise', num: '05', title: 'Advise me', sub: 'I don\u2019t know yet.' },
+    ].map((g) => Object.assign({}, g, { pick: () => this.setState({ goal: g.id, step: 2 }) }));
+
+    const budgetDefs = [
+      { id: 'b1', label: 'Under 1M', note: 'Entry / studio–1 bed' },
+      { id: 'b2', label: '1 – 3M', note: 'Core apartment' },
+      { id: 'b3', label: '3 – 8M', note: 'Townhouse / villa' },
+      { id: 'b4', label: '8 – 20M', note: 'Prime' },
+      { id: 'b5', label: '20M +', note: 'Ultra-prime' },
+    ];
+    const budgets = budgetDefs.map((b) => ({
+      label: b.label, note: b.note,
+      style: s.budget === b.id ? 'background:#0D0D0F;color:#FFFFFF' : 'background:#FFFFFF;color:#0D0D0F',
+      pick: () => this.setState({ budget: b.id, step: 3 }),
+    }));
+
+    const priorityDefs = ['Capital appreciation', 'Rental income', 'Lifestyle', 'Luxury', 'Off-plan opportunity', 'Long-term portfolio growth'];
+    const priorityOpts = priorityDefs.map((label) => {
+      const on = s.priorities.indexOf(label) > -1;
+      return {
+        label,
+        style: on ? 'background:' + INK + ';color:#FFFFFF;border:1px solid ' + INK : 'background:#FFFFFF;color:' + INK + ';border:1px solid ' + LINE,
+        toggle: () => this.setState((st) => {
+          const has = st.priorities.indexOf(label) > -1;
+          if (has) return { priorities: st.priorities.filter((x) => x !== label) };
+          if (st.priorities.length >= 3) return {};
+          return { priorities: st.priorities.concat([label]) };
+        }),
+      };
+    });
+
+    const stepLabels = [
+      { n: 1, label: 'Objective' }, { n: 2, label: 'Budget' }, { n: 3, label: 'Priorities' },
+    ];
+    const engineSteps = stepLabels.map((x) => ({
+      label: x.label,
+      style: s.step >= x.n ? 'color:' + INK : 'color:#C4C0B9',
+    }));
+
+    const goalName = { buy: 'a home to live in', invest: 'an investment position', sell: 'an exit', relocate: 'a relocation', advise: 'direction' }[s.goal] || 'a decision';
+    const budgetName = (budgetDefs.find((b) => b.id === s.budget) || {}).label || '';
+    const prioText = s.priorities.length ? s.priorities.join(', ').toLowerCase() : 'a balanced profile';
+
+    const rankSource = s.priorities.indexOf('Rental income') > -1
+      ? ['jvc', 'jlt', 'businessbay']
+      : s.priorities.indexOf('Luxury') > -1 ? ['palm', 'downtown', 'hills']
+      : s.priorities.indexOf('Off-plan opportunity') > -1 ? ['creek', 'south', 'businessbay']
+      : s.priorities.indexOf('Lifestyle') > -1 ? ['hills', 'ranches', 'marina']
+      : s.priorities.indexOf('Capital appreciation') > -1 ? ['hills', 'creek', 'downtown']
+      : ['hills', 'marina', 'jvc'];
+    const matches = rankSource.map((id) => {
+      const a = AREAS.find((x) => x.id === id);
+      return { name: a.name, meta: a.tags.join(' · ') + ' · ' + a.maturity, yield: a.yld };
+    });
+
+    // ── collections
+    const col = COLLECTIONS.find((c) => c.id === s.collection) || COLLECTIONS[0];
+    const collectionTabs = COLLECTIONS.map((c) => ({
+      label: c.label,
+      style: c.id === s.collection
+        ? 'color:' + INK + ';border-bottom:2px solid ' + RED + ';margin-bottom:-1px'
+        : 'color:#9C9893;border-bottom:2px solid transparent;margin-bottom:-1px',
+      pick: () => this.setState({ collection: c.id }),
+    }));
+
+    // ── services
+    const svc = SERVICES.find((x) => x.id === s.service) || SERVICES[0];
+    const serviceTabs = SERVICES.map((x) => ({
+      label: x.label,
+      style: x.id === s.service
+        ? 'color:' + INK + ';border-bottom:2px solid ' + RED + ';margin-bottom:-1px'
+        : 'color:#9C9893;border-bottom:2px solid transparent;margin-bottom:-1px',
+      pick: () => this.setState({ service: x.id }),
+    }));
+
+    // ── stats
+    const t = s.counterT;
+    const stats = STATS.map((st) => {
+      const v = st.to * t;
+      const shown = st.to >= 1000 ? Math.round(v / 100) * 100 : Math.round(v);
+      const fmt = shown >= 1000 ? shown.toLocaleString('en-US') : String(shown);
+      return { display: st.prefix + fmt + st.suffix, label: st.label };
+    });
+
+    // ── market charts
+    const volumeData = [[2020, 38], [2021, 56], [2022, 74], [2023, 84], [2024, 96], [2025, 100]];
+    const volumeBars = volumeData.map((d) => ({
+      year: d[0],
+      style: 'height:0',
+      target: d[1] + '%',
+    })).map((d, i) => ({ year: d.year, style: 'height:0' , target: d.target, i }));
+    const volumeOut = volumeData.map((d) => ({ year: String(d[0]), style: 'height:0', dataTarget: d[1] + '%' }));
+
+    const yieldData = [['Jumeirah Village', 76], ['Jumeirah Lakes', 71], ['Business Bay', 68], ['Dubai Marina', 64], ['Dubai Hills', 56], ['Palm Jumeirah', 46]];
+
+    const marketIndicators = [
+      { value: '1.6M', delta: 'Growing', label: 'Dubai population', note: 'Sustained in-migration is the structural support under rental demand.' },
+      { value: '7.2%', delta: 'City avg.', label: 'Gross rental yield', note: 'High by global standards; the spread between communities is wider still.' },
+      { value: '0%', delta: 'Annual', label: 'Property tax', note: 'No recurring annual property tax, which lifts net returns materially.' },
+      { value: '100%', delta: 'Freehold', label: 'Foreign ownership', note: 'Full freehold ownership for overseas buyers in designated areas.' },
+    ];
+
+    // ── community
+    const area = this.area();
+    const areaMetrics = [
+      { label: 'Price band', value: area.price },
+      { label: 'Avg. price / sqft', value: area.ppsf },
+      { label: 'Gross yield', value: area.yld },
+      { label: 'Maturity', value: area.maturity },
+      { label: 'Demand profile', value: area.demand },
+      { label: 'Lifestyle', value: area.lifestyle },
+    ];
+
+    // ── x-ray
+    const xr = this.xrayResult();
+    const circ = 2 * Math.PI * 54;
+    const xrayTypes = ['Apartment', 'Townhouse', 'Villa', 'Off-Plan'].map((label) => ({
+      label,
+      style: s.xrayType === label
+        ? 'background:#FFFFFF;color:' + INK + ';border:1px solid #FFFFFF'
+        : 'background:transparent;color:rgba(255,255,255,0.72);border:1px solid rgba(255,255,255,0.28)',
+      pick: () => this.setState({ xrayType: label }),
+    }));
+    const xrayBeds = [1, 2, 3, 4, 5].map((n) => ({
+      label: String(n),
+      style: s.xrayBeds === n
+        ? 'background:#FFFFFF;color:' + INK + ';border:1px solid #FFFFFF'
+        : 'background:transparent;color:rgba(255,255,255,0.72);border:1px solid rgba(255,255,255,0.28)',
+      pick: () => this.setState({ xrayBeds: n }),
+    }));
+
+    const xrayMetrics = [
+      { label: 'Market value', value: this.money(xr.area.score > 75 ? s.xrayPrice * 1.03 : s.xrayPrice * 0.97), note: 'vs asking ' + this.money(s.xrayPrice) },
+      { label: 'Rental potential', value: this.money(xr.rent) + ' / yr', note: 'Market rent, stabilised' },
+      { label: 'Est. gross yield', value: xr.est.toFixed(1) + '%', note: 'Community avg. ' + xr.area.yld },
+      { label: 'Community perf.', value: xr.area.maturity, note: xr.area.demand },
+      { label: 'Price position', value: s.xrayPrice > 8000000 ? 'Upper quartile' : s.xrayPrice > 2500000 ? 'Mid market' : 'Entry band', note: xr.area.ppsf + ' area avg.' },
+      { label: 'Investment profile', value: xr.est > 6.5 ? 'Income' : xr.est > 5.2 ? 'Balanced' : 'Capital', note: 'Based on yield vs growth' },
+    ];
+    const xrayWhy = [
+      xr.area.view,
+      'Estimated stabilised rent of ' + this.money(xr.rent) + ' supports a gross yield of ' + xr.est.toFixed(1) + '% at the asking price.',
+      s.xrayType === 'Off-Plan'
+        ? 'Off-plan carries delivery risk, which we score down until the developer\u2019s record is verified.'
+        : 'Completed stock with an observable rental history scores higher than pre-handover equivalents.',
+    ];
+    const xrayRisks = [
+      xr.area.maturity === 'Early' || xr.area.maturity === 'Emerging'
+        ? 'Community is still early — infrastructure delivery drives the value case more than current rents do.'
+        : 'Service charges vary sharply between buildings here and can move net yield by more than a point.',
+      s.xrayPrice > 8000000
+        ? 'Thinner buyer pool at this price point; budget for a longer exit window.'
+        : 'Supply pipeline in the surrounding submarket may compress rents on renewal.',
+    ];
+
+    // ── mobile nav
+    const mobileNavLinks = [
+      { href: '#opportunities', label: 'Opportunities', style: '' },
+      { href: '#market', label: 'Market', style: '' },
+      { href: '#communities', label: 'Communities', style: '' },
+      { href: '#xray', label: 'Property X-Ray', style: '' },
+      { href: '#insights', label: 'Insights', style: '' },
+      { href: '#advisors', label: 'About H&S', style: '' },
+      { href: '#talk', label: 'Talk to an Advisor', style: 'margin-top:14px;padding:15px 20px;text-align:center;background:#C4162B;color:#FFFFFF;border:1px solid #C4162B;font-weight:600' },
+    ];
+
+    // ── faqs
+    const faqs = FAQ_DATA.map((f, i) => ({
+      q: f.q, a: f.a,
+      sign: s.faqOpen === i ? '\u2212' : '+',
+      panelStyle: s.faqOpen === i ? 'max-height:420px;opacity:1' : 'max-height:0;opacity:0',
+      toggle: () => this.setState((st) => ({ faqOpen: st.faqOpen === i ? -1 : i })),
+    }));
+
+    return {
+      navLogo: navSolid ? 'assets/hs-logo-dark.png' : 'assets/hs-logo-light.png',
+      navStyle: s.mobileMenuOpen
+        ? (navSolid
+            ? 'background:rgba(250,248,245,0.98);backdrop-filter:blur(14px);border-bottom-color:' + LINE + ';color:' + INK
+            : 'background:' + INK + ';color:#FFFFFF')
+        : (navSolid
+            ? 'background:rgba(250,248,245,0.94);backdrop-filter:blur(14px);border-bottom-color:' + LINE + ';color:' + INK
+            : 'background:linear-gradient(180deg,rgba(13,13,15,0.5),rgba(13,13,15,0));color:#FFFFFF'),
+      engineOffset: engineVariant === 'overlay' ? 'margin-top:clamp(-120px,-8vw,-48px)' : 'margin-top:clamp(40px,5vw,80px)',
+
+      mobileMenuOpen: s.mobileMenuOpen,
+      mobileMenuOpenAttr: s.mobileMenuOpen ? 'true' : 'false',
+      mobileToggleClass: 'hs-nav-toggle' + (s.mobileMenuOpen ? ' is-open' : ''),
+      mobileNavLinks,
+      toggleMobileMenu: () => this.setState((st) => ({ mobileMenuOpen: !st.mobileMenuOpen })),
+      closeMobileMenu: () => this.setState({ mobileMenuOpen: false }),
+
+      engineSteps, goals, budgets, priorityOpts,
+      isStep1: s.step === 1, isStep2: s.step === 2, isStep3: s.step === 3, isResult: s.step === 4,
+      back: () => this.setState((st) => ({ step: Math.max(1, st.step - 1) })),
+      reset: () => this.setState({ step: 1, goal: null, budget: null, priorities: [] }),
+      submit: () => this.setState({ step: 4 }),
+      resultHeadline: 'You are looking for ' + goalName + (budgetName ? ' at ' + budgetName.replace('M', 'M AED').replace('Under 1M AED', 'under AED 1M') : '') + '.',
+      resultBody: 'Weighted toward ' + prioText + '. Based on that brief, these are the communities our advisors would put in front of you first — with the reasoning, the risks and live inventory in the full briefing.',
+      matches,
+
+      stats,
+
+      marketIndicators,
+      volumeBars: volumeData.map((d) => ({ year: String(d[0]), style: 'height:' + d[1] + '%' })),
+      yieldRows: yieldData.map((d) => ({ name: d[0], pct: (d[1] / 10).toFixed(1) + '%', style: 'width:' + d[1] + '%' })),
+
+      collectionTabs,
+      collectionThesis: col.thesis,
+      collectionBody: col.body,
+      collectionItems: col.items,
+
+      areas: AREAS,
+      areaId: area.id,
+      area,
+      areaTags: area.tags,
+      areaMetrics,
+      selectArea: (id) => this.setState({ areaId: id }),
+
+      xray: { areaId: xr.area.id, price: s.xrayPrice },
+      xrayTypes, xrayBeds,
+      xrayPriceLabel: this.money(s.xrayPrice),
+      setXrayArea: (e) => this.setState({ xrayAreaId: e.target.value }),
+      setXrayPrice: (e) => this.setState({ xrayPrice: Number(e.target.value) }),
+      runXray: () => this.setState((st) => ({ xrayRun: st.xrayRun + 1 })),
+      xrayDone: true,
+      xrayScore: xr.score,
+      xrayDash: (circ * xr.score / 100).toFixed(1) + ' ' + circ.toFixed(1),
+      xrayVerdict: xr.verdict,
+      xraySummary: 'A ' + s.xrayBeds + '-bedroom ' + s.xrayType.toLowerCase() + ' in ' + xr.area.name + ' at ' + this.money(s.xrayPrice) + ', scored against community performance, rent evidence and price position.',
+      xrayMetrics, xrayWhy, xrayRisks,
+
+      cases: [
+        { tag: 'Investor · Income mandate', slotId: 'case-1',
+          title: 'Rebuilding a three-unit portfolio around net yield, not headline yield',
+          metrics: [{ value: 'AED 4.2M', label: 'Deployed' }, { value: '7.4%', label: 'Net yield' }, { value: '19 days', label: 'To first lease' }],
+          blocks: [
+            { label: 'The client', text: 'A UK-based investor holding three Dubai apartments bought individually over six years, with no common underwriting.' },
+            { label: 'The objective', text: 'Consolidate into fewer, better-let assets and raise net income without adding capital.' },
+            { label: 'The challenge', text: 'Two of the three had service charges high enough to erase the yield advantage that justified the original purchase.' },
+            { label: 'The H&S strategy', text: 'Exit both, redeploy into two managed buildings with evidenced charge history, and stagger lease expiries.' },
+          ] },
+        { tag: 'End user · Family relocation', slotId: 'case-2',
+          title: 'Eight viewings, one offer, and a school place secured before the move',
+          metrics: [{ value: 'AED 6.1M', label: 'Purchase' }, { value: '8', label: 'Viewings' }, { value: '11 weeks', label: 'Search to keys' }],
+          blocks: [
+            { label: 'The client', text: 'A family relocating from Singapore with two school-age children and a fixed start date.' },
+            { label: 'The objective', text: 'A villa within a defined school catchment, ready to occupy, no renovation.' },
+            { label: 'The challenge', text: 'The catchment narrowed the market to roughly forty plots, most of which were not openly listed.' },
+            { label: 'The H&S strategy', text: 'Direct owner approach across the catchment, sequenced against the school admissions calendar.' },
+          ] },
+        { tag: 'Seller · Prime exit', slotId: 'case-3',
+          title: 'Repositioning a prime asset that had been listed for eleven months',
+          metrics: [{ value: '+9%', label: 'Above prior listing' }, { value: '34 days', label: 'To offer' }, { value: '3', label: 'Competing bids' }],
+          blocks: [
+            { label: 'The client', text: 'An owner of a full-floor prime apartment, previously listed with three agencies simultaneously.' },
+            { label: 'The objective', text: 'Achieve a price supported by comparable completed sales rather than by asking-price averages.' },
+            { label: 'The challenge', text: 'Market fatigue — the asset had been visible for so long that buyers assumed a problem.' },
+            { label: 'The H&S strategy', text: 'Withdraw, re-present with new photography and floor plans, and relaunch to a defined buyer list.' },
+          ] },
+      ],
+
+      differentiators: [
+        { num: '01', title: 'Market knowledge', text: 'Community-level understanding of supply, absorption and rent cycles — not a portal search with a person attached.' },
+        { num: '02', title: 'Human advisory', text: 'A named specialist accountable for the recommendation, including the recommendation to do nothing.' },
+        { num: '03', title: 'Market access', text: 'Developer and owner relationships that surface stock before it is listed publicly.' },
+        { num: '04', title: 'Data-led decisions', text: 'Every opportunity underwritten in the same format, so two options can genuinely be compared.' },
+        { num: '05', title: 'End-to-end support', text: 'Financing, transfer, leasing, management and eventual exit handled by one team.' },
+      ],
+
+      serviceTabs,
+      serviceHeadline: svc.headline,
+      serviceBody: svc.body,
+      serviceCta: svc.cta,
+      serviceItems: svc.items,
+
+      advisors: [
+        { slotId: 'adv-1', name: 'Michael Haddad', first: 'Michael', role: 'Senior Property Advisor',
+          quote: '\u201CMost clients arrive with a shortlist. My job is usually to shorten it further.\u201D',
+          facts: [{ label: 'Focus', value: 'Luxury residential' }, { label: 'Communities', value: 'Palm, Downtown' }, { label: 'Languages', value: 'English, Arabic, French' }, { label: 'Experience', value: '14 years' }] },
+        { slotId: 'adv-2', name: 'Sara Ivanova', first: 'Sara', role: 'Investment Advisory',
+          quote: '\u201CGross yield sells properties. Net yield is what you actually live on.\u201D',
+          facts: [{ label: 'Focus', value: 'Income portfolios' }, { label: 'Communities', value: 'JVC, JLT, Bay' }, { label: 'Languages', value: 'English, Russian' }, { label: 'Experience', value: '11 years' }] },
+        { slotId: 'adv-3', name: 'Rahul Menon', first: 'Rahul', role: 'Off-Plan & New Developments',
+          quote: '\u201CThe phase you buy matters more than the developer\u2019s brochure.\u201D',
+          facts: [{ label: 'Focus', value: 'Off-plan, payment plans' }, { label: 'Communities', value: 'Creek, Dubai South' }, { label: 'Languages', value: 'English, Hindi, Malayalam' }, { label: 'Experience', value: '9 years' }] },
+      ],
+
+      testimonials: [
+        { quote: '\u201CThey talked me out of the first two properties I wanted. That is the reason I still work with them four purchases later.\u201D', name: 'A. Khoury', role: 'Investor · Portfolio client', metric: '4', metricLabel: 'Transactions' },
+        { quote: '\u201CWe saw eight homes, not eighty. Every one of them was genuinely within our catchment and our budget.\u201D', name: 'The Lindqvist family', role: 'Relocation · Dubai Hills', metric: '11 wks', metricLabel: 'Search to keys' },
+      ],
+
+      insightCats: ['Market', 'Investment', 'Communities', 'Off-Plan', 'Luxury', 'Guides'],
+      articles: [
+        { cat: 'Investment', title: 'Net yield, not gross: the four costs most buyers underestimate', meta: '8 min read · Advisory note' },
+        { cat: 'Communities', title: 'Dubai Hills Estate: why end-user demand changes the risk profile', meta: '6 min read · Community brief' },
+        { cat: 'Off-Plan', title: 'Reading a payment plan: what 60/40 actually costs you', meta: '9 min read · Guide' },
+        { cat: 'Luxury', title: 'Scarcity on the Palm: a supply study of beachfront fronds', meta: '12 min read · Market study' },
+      ],
+
+      faqs,
+    };
+  }
+}
+
+</script>
+</body>
+</html>
